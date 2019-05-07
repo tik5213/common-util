@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="975px"
+    android:layout_height="1170px">
+
+    <ImageView
+        android:id="@+id/root_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="#ff00ff" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="54px"
+        android:paddingRight="54px"
+        tools:ignore="PxUsage">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100px"
+            android:includeFontPadding="false"
+            android:text="每日健康真相"
+            android:textColor="#333333"
+            android:textSize="32px"
+            android:textStyle="bold"
+            tools:ignore="PxUsage" />
+
+        <TextView
+            android:id="@+id/tv_health_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16px"
+            android:includeFontPadding="false"
+            android:text="2018.10.11"
+            android:textColor="#999999"
+            android:textSize="24px"
+            android:textStyle="bold"
+            tools:ignore="PxUsage" />
+
+        <TextView
+            android:id="@+id/tv_health_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="92px"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="26px"
+            android:maxLines="3"
+            android:textColor="#333333"
+            android:textSize="52px"
+            android:textStyle="bold"
+            tools:ignore="PxUsage"
+            tools:text="每天至少要有相当于多少步的活动量？每天至少要有相当于多少步的" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="136px"
+            android:layout_weight="1"
+            android:gravity="right|center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:text="长按扫码"
+                    android:textColor="#999999"
+                    android:textSize="26px"
+                    tools:ignore="PxUsage" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8px"
+                    android:includeFontPadding="false"
+                    android:text="查看详情"
+                    android:textColor="#999999"
+                    android:textSize="26px"
+                    tools:ignore="PxUsage" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_health_qrcode"
+                android:layout_width="108px"
+                android:layout_height="108px"
+                android:layout_marginLeft="24px"
+                android:scaleType="fitXY"
+                tools:ignore="PxUsage" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</FrameLayout>
