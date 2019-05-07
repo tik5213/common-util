@@ -18,6 +18,6 @@ public class TranslucentActivityUtil {
      */
     public static void setActivityTranslucent(Activity activity){
 
-        activity.setTheme(R.style.Support_Translucent);
+        activity.setTheme(R.style.UtilSupport_Translucent);
     }
 }

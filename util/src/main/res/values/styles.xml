@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="Support.Translucent" parent="Theme.AppCompat.NoActionBar">
+    <style name="UtilSupport.Translucent" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimaryDark">@android:color/transparent</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
@@ -9,7 +9,7 @@
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
-    <style name="Support.TranslucentDefault" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="UtilSupport.TranslucentDefault" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowIsTranslucent">true</item>
     </style>
 

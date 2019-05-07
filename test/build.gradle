@@ -1,16 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
+    buildToolsVersion
 
     defaultConfig {
         applicationId "top.ftas.test"
-        minSdkVersion 16
-        targetSdkVersion 28
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         //高斯模糊-使用renderscript 兼容包
-        renderscriptTargetApi 27
+        renderscriptTargetApi rootProject.ext.targetSdkVersion
         renderscriptSupportModeEnabled true
     }
 
@@ -24,6 +25,9 @@ android {
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 

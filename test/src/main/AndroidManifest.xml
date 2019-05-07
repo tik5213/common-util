@@ -10,7 +10,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:name="cn.ftas.test.top.ftas.test.application.MyApplication"
+        android:name="top.ftas.test.application.MyApplication"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="top.ftas.dunit.activity.DUnitSimpleListActivity">
@@ -21,17 +21,17 @@
         </activity>
         <activity android:name="top.ftas.dunit.activity.SingleFragmentActivity" />
         <activity android:name="top.ftas.dunit.activity.SingleSupportFragmentActivity" />
-        <activity android:name="cn.ftas.test.top.ftas.test.TestWindowUtilActivity" />
-        <activity android:name="cn.ftas.test.top.ftas.test.TestWindowFullScreenUtilActivity" />
-        <activity android:name="cn.ftas.test.top.ftas.test.TestGaussActivity" />
-        <activity android:name="cn.ftas.test.top.ftas.test.TestTranslucentActivity"
-            android:theme="@style/Support.TranslucentDefault"
+        <activity android:name="top.ftas.test.TestWindowUtilActivity" />
+        <activity android:name="top.ftas.test.TestWindowFullScreenUtilActivity" />
+        <activity android:name="top.ftas.test.TestGaussActivity" />
+        <activity android:name="top.ftas.test.TestTranslucentActivity"
+            android:theme="@style/UtilSupport.TranslucentDefault"
             />
-        <activity android:name="cn.ftas.test.top.ftas.test.TestShareRedPaperPictureUtilActivity" />
-        <activity android:name="cn.ftas.test.top.ftas.test.okhttp.TestOkHttpClientNoVerifyUtilActivity" />
-        <activity android:name="cn.ftas.test.top.ftas.test.bitmap.TestLoadBitmapFromViewUtilActivity" />
-        <activity android:name="cn.ftas.test.top.ftas.test.recyclerview.TestItemDecorationUtilActivity" />
-        <activity android:name="cn.ftas.test.top.ftas.test.string.TestSpannableStringBuilderActivity" />
+        <activity android:name="top.ftas.test.TestShareRedPaperPictureUtilActivity" />
+        <activity android:name="top.ftas.test.okhttp.TestOkHttpClientNoVerifyUtilActivity" />
+        <activity android:name="top.ftas.test.bitmap.TestLoadBitmapFromViewUtilActivity" />
+        <activity android:name="top.ftas.test.recyclerview.TestItemDecorationUtilActivity" />
+        <activity android:name="top.ftas.test.string.TestSpannableStringBuilderActivity" />
 
 
     </application>
