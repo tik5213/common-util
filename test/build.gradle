@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        applicationId "cn.dxy.test"
+        applicationId "top.ftas.test"
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1

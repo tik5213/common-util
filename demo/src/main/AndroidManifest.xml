@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cn.dxy.demo">
+    package="cn.ftas.demo">
 
     <application
         android:allowBackup="true"
@@ -18,8 +18,8 @@
         <activity android:name="top.ftas.dunit.activity.SingleFragmentActivity" />
         <activity android:name="top.ftas.dunit.activity.SingleSupportFragmentActivity" />
 
-        <activity android:name=".TabLayoutCustomViewDemoActivity" />
-        <activity android:name=".inputdemo.HealthWriteInfoActivity" />
+        <activity android:name="cn.ftas.demo.top.ftas.demo.TabLayoutCustomViewDemoActivity" />
+        <activity android:name="cn.ftas.demo.top.ftas.demo.inputdemo.HealthWriteInfoActivity" />
     </application>
 
 </manifest>

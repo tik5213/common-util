@@ -6,7 +6,7 @@ android {
 
 
     defaultConfig {
-        applicationId "cn.dxy.demo"
+        applicationId "top.ftas.demo"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1

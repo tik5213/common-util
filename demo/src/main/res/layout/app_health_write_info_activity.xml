@@ -18,7 +18,7 @@
         android:textColor="#999999"
         android:textSize="12sp" />
 
-    <cn.dxy.demo.inputdemo.HealthWriteInfoItem
+    <top.ftas.demo.inputdemo.HealthWriteInfoItem
         android:id="@+id/info_item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         app:item_title="姓名"
         app:item_value_hint="请填写真实姓名" />
 
-    <cn.dxy.demo.inputdemo.HealthWriteInfoItem
+    <top.ftas.demo.inputdemo.HealthWriteInfoItem
         android:id="@+id/info_item_identity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         android:textColor="#999999"
         android:textSize="12sp" />
 
-    <cn.dxy.demo.inputdemo.HealthWriteInfoItem
+    <top.ftas.demo.inputdemo.HealthWriteInfoItem
         android:id="@+id/info_item_hospital"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
         app:item_title="就诊医院"
         app:item_value_hint="请选择就诊医院" />
 
-    <cn.dxy.demo.inputdemo.HealthWriteInfoItem
+    <top.ftas.demo.inputdemo.HealthWriteInfoItem
         android:id="@+id/info_item_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
         app:item_title="就诊科室"
         app:item_value_hint="请选择就诊科室" />
 
-    <cn.dxy.demo.inputdemo.HealthWriteInfoItem
+    <top.ftas.demo.inputdemo.HealthWriteInfoItem
         android:id="@+id/info_item_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
         app:item_title="就诊时间"
         app:item_value_hint="请选择就诊时间" />
 
-    <cn.dxy.demo.inputdemo.HealthWriteInfoItem
+    <top.ftas.demo.inputdemo.HealthWriteInfoItem
         android:id="@+id/info_item_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
