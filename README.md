@@ -20,3 +20,9 @@
     compileOnly 'com.squareup.okhttp3:okhttp:3.12.1'
     compileOnly 'com.squareup.okio:okio:1.15.0'
 ```
+
+# 依赖
+
+```sh
+api 'top.ftas:common-util:1.1'
+```
