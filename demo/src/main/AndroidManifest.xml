@@ -18,8 +18,8 @@
         <activity android:name="top.ftas.dunit.activity.SingleFragmentActivity" />
         <activity android:name="top.ftas.dunit.activity.SingleSupportFragmentActivity" />
 
-        <activity android:name="cn.ftas.demo.top.ftas.demo.TabLayoutCustomViewDemoActivity" />
-        <activity android:name="cn.ftas.demo.top.ftas.demo.inputdemo.HealthWriteInfoActivity" />
+        <activity android:name="top.ftas.demo.TabLayoutCustomViewDemoActivity" />
+        <activity android:name="top.ftas.demo.inputdemo.HealthWriteInfoActivity" />
     </application>
 
 </manifest>
