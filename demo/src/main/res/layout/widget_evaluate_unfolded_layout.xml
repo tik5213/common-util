@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="#f4f4f4"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:layout_height="49dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:id="@+id/evaluate_dynamic_layout"
+        android:background="@drawable/shape_rectangle_solid_white_corners_24dp"
+        android:elevation="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:id="@+id/evaluate_unfolded_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.willy.ratingbar.BaseRatingBar
+                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true"
+                android:id="@+id/star_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:rating="0"
+                app:srb_drawableEmpty="@drawable/ic_star_dim"
+                app:srb_drawableFilled="@drawable/ic_star_shine"
+                app:srb_numStars="5"
+                app:srb_isIndicator="true"
+                app:srb_starHeight="16dp"
+                app:srb_starPadding="3dp"
+                app:srb_starWidth="17dp"
+                app:srb_stepSize="1" />
+
+            <ImageView
+                android:id="@+id/btn_close_layout"
+                android:paddingRight="15dp"
+                android:paddingLeft="15dp"
+                android:scaleType="center"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_close_grey_little"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <TextView
+                style="@style/Label9PngStyle"
+                android:layout_marginLeft="3dp"
+                android:layout_toRightOf="@id/star_view"
+                android:maxLines="1"
+                android:id="@+id/tv_label"
+                android:layout_centerVertical="true"
+                android:text="评价得优惠券"
+                />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/evaluate_folded_layout"
+            android:layout_width="wrap_content"
+            android:layout_gravity="left"
+            android:visibility="invisible"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:drawableRight="@drawable/ic_symptom_arrow"
+            android:drawablePadding="6dp"
+            android:gravity="center"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            android:textColor="#28b7a3"
+            android:lineSpacingExtra="2sp"
+            android:text="评价得券"
+            />
+
+        <View
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            android:id="@+id/v_not_click_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </FrameLayout>
+</FrameLayout>

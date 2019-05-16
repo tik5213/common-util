@@ -20,6 +20,7 @@
 
         <activity android:name="top.ftas.demo.TabLayoutCustomViewDemoActivity" />
         <activity android:name="top.ftas.demo.inputdemo.HealthWriteInfoActivity" />
+        <activity android:name="top.ftas.demo.animation.evaluate.EvaluateUnfoldedViewTestActivity" />
     </application>
 
 </manifest>
