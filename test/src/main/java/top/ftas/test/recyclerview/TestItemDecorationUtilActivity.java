@@ -134,9 +134,9 @@ public class TestItemDecorationUtilActivity extends AppCompatActivity {
                     case TYPE_TITLE_3_ITEM:
                         ItemDecorationUtil
                                 .reset()
-                                .setLeftRightSpace(dip2px(mContext,15))
-                                .setVerticalCenterSpace(dip2px(mContext,8))
-                                .setHorizontalCenterSpace(dip2px(mContext,8))
+                                .setLeftRightSpace(15)
+                                .setVerticalCenterSpace(8)
+                                .setHorizontalCenterSpace(8)
                                 .setBottomSpace(15)
                                 .getItemOffsets(outRect,view,parent,state);
 
@@ -144,8 +144,11 @@ public class TestItemDecorationUtilActivity extends AppCompatActivity {
                     case TYPE_TITLE_4_ITEM:
                         ItemDecorationUtil
                                 .reset()
-                                .setVerticalCenterSpace(dip2px(mContext,10))
-                                .setBottomSpace(dip2px(mContext,55))
+                                .setLeftRightSpace(5)
+                                .topIsEqualCenter()
+                                .setVerticalCenterSpace(10)
+                                .setHorizontalCenterSpace(20)
+                                .setBottomSpace(55)
                                 .getItemOffsets(outRect,view,parent,state);
                         break;
                 }
