@@ -3,6 +3,8 @@ package top.ftas.util.gauss;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
@@ -17,9 +19,19 @@ import top.ftas.util.size.NavigationBarUtil;
 
 /**
  * 获取高斯截屏 保存到缓存文件中 返回保存的路径
- //高斯模糊-使用renderscript 兼容包
- renderscriptTargetApi 27
- renderscriptSupportModeEnabled true
+ *
+ * // 高斯模糊兼容库
+ * maven {url "https://jitpack.io"}
+ *
+ * //高斯模糊
+ * api 'com.github.pinguo-zhouwei:EasyBlur:v1.0.0'
+ *
+ * //build.xml -> android -> defaultConfig
+ * //高斯模糊-使用renderscript 兼容包
+ * renderscriptTargetApi 27
+ * renderscriptSupportModeEnabled true
+ *
+ *
  */
 public class GaussBackgroundUtil {
     public static final String GAUSS_BITMAP_CACHE_FILE_NAME = "getGaussBitmapCacheFile.jpg";
@@ -27,27 +39,36 @@ public class GaussBackgroundUtil {
 
     /**
      * 如果有缓存，则使用缓存中的高斯图片
-     * @param activity
-     * @return
      */
-    public static String getGaussBitmapCacheFile(Activity activity){
-        return getGaussBitmapCacheFile(activity,false);
+    public static Bitmap getGaussBitmapCache(@NonNull Activity activity) {
+        String gaussBitmapPath = getGaussBitmapCacheFile(activity);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inPreferredConfig = Bitmap.Config.RGB_565;
+        Bitmap gaussBitmap = BitmapFactory.decodeFile(gaussBitmapPath, bmOptions);
+        return gaussBitmap;
     }
 
-    public static String getGaussBitmapCacheFile(Activity activity,boolean forceReset){
-        File file = parseGaussBitmapFilePath(activity,GAUSS_BITMAP_CACHE_FILE_NAME);
-        if (file.exists() && !forceReset){
+    /**
+     * 如果有缓存，则使用缓存中的高斯图片
+     */
+    public static String getGaussBitmapCacheFile(Activity activity) {
+        return getGaussBitmapCacheFile(activity, false);
+    }
+
+    public static String getGaussBitmapCacheFile(Activity activity, boolean forceReset) {
+        File file = parseGaussBitmapFilePath(activity, GAUSS_BITMAP_CACHE_FILE_NAME);
+        if (file.exists() && !forceReset) {
             return file.getPath();
-        }else if (forceReset){
+        } else if (forceReset) {
             try {
-                File gaussOriginalFile = createAndSaveGaussBitmapToFile(activity,GAUSS_BITMAP_CACHE_FILE_NAME_ORIGINAL);
-                if (gaussOriginalFile != null && gaussOriginalFile.exists()){
+                File gaussOriginalFile = createAndSaveGaussBitmapToFile(activity, GAUSS_BITMAP_CACHE_FILE_NAME_ORIGINAL);
+                if (gaussOriginalFile != null && gaussOriginalFile.exists()) {
                     boolean renameResult = gaussOriginalFile.renameTo(file);
-                    if (renameResult){
+                    if (renameResult) {
                         return file.getPath();
                     }
                 }
-            }catch (Throwable throwable){
+            } catch (Throwable throwable) {
                 throwable.printStackTrace();
             }
         }
@@ -56,35 +77,27 @@ public class GaussBackgroundUtil {
 
     /**
      * 判断高斯模糊图片缓存是否存在
-     * @param context
-     * @return
      */
-    public static boolean gaussBitmapCacheFileNotExist(Context context){
-        return ! parseGaussBitmapFilePath(context,GAUSS_BITMAP_CACHE_FILE_NAME).exists();
+    public static boolean gaussBitmapCacheFileNotExist(Context context) {
+        return !parseGaussBitmapFilePath(context, GAUSS_BITMAP_CACHE_FILE_NAME).exists();
     }
 
     /**
      * 获取高斯截屏 保存到缓存文件中 返回保存的路径
-     * @param activity
-     * @param fileName
-     * @return
      */
     @Nullable
-    public static File createAndSaveGaussBitmapToFile(Activity activity,String fileName){
+    public static File createAndSaveGaussBitmapToFile(Activity activity, String fileName) {
         Bitmap bitmap = getGaussBitmap(activity);
         if (bitmap == null) return null;
-        File path = saveBitmapToSDCard(activity,bitmap,fileName);
+        File path = saveBitmapToSDCard(activity, bitmap, fileName);
         bitmap.recycle();
         return path;
     }
 
     /**
      * 根据文件名解析出高斯图片的位置
-     * @param context
-     * @param fileName
-     * @return
      */
-    public static File parseGaussBitmapFilePath(Context context,String fileName){
+    public static File parseGaussBitmapFilePath(Context context, String fileName) {
         File dir = context.getExternalCacheDir();
 
         File file = new File(dir, fileName);
@@ -94,17 +107,17 @@ public class GaussBackgroundUtil {
     /**
      * 保存文件到sdcard
      */
-    public static File saveBitmapToSDCard(Context context, Bitmap bitmap, String fileName){
-        File file = parseGaussBitmapFilePath(context,fileName);
+    public static File saveBitmapToSDCard(Context context, Bitmap bitmap, String fileName) {
+        File file = parseGaussBitmapFilePath(context, fileName);
 
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG,80, fos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
 
             fos.flush();
             fos.close();
-        }catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
 
             e.printStackTrace();
         } catch (Exception e) {
@@ -125,8 +138,6 @@ public class GaussBackgroundUtil {
 
     /**
      * 获取高斯截屏
-     * @param activity
-     * @return
      */
     public static Bitmap getGaussBitmap(Activity activity) {
         try {
@@ -139,7 +150,7 @@ public class GaussBackgroundUtil {
                     .blur();
 
             return newBitmap;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -155,7 +166,7 @@ public class GaussBackgroundUtil {
         Bitmap bitmap = decorView.getDrawingCache();
 
         int navigationBarHeight = NavigationBarUtil.getNavigationBarHeight(activity);
-        Bitmap bmpScreenshot = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(), bitmap.getHeight() - navigationBarHeight);
+        Bitmap bmpScreenshot = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight() - navigationBarHeight);
 
         decorView.destroyDrawingCache();
         decorView.setDrawingCacheEnabled(isCacheEnable);
