@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.ftas.test.R;
+import top.ftas.util.ToastUtil;
 import top.ftas.util.recyclerview.ItemDecorationUtil;
 import top.ftas.dunit.annotation.DUnit;
 
@@ -28,8 +29,10 @@ import top.ftas.dunit.annotation.DUnit;
 @DUnit
 public class TestItemDecorationUtilActivity extends AppCompatActivity {
     public static final int TYPE_FULL_TITLE = 1;
-    public static final int TYPE_TITLE_3_ITEM = 2;
-    public static final int TYPE_TITLE_4_ITEM = 3;
+    public static final int TYPE_TITLE_2_ITEM = 2;
+    public static final int TYPE_TITLE_3_ITEM = 3;
+    public static final int TYPE_TITLE_4_ITEM = 4;
+    public static final int TYPE_TITLE_4_ITEM_2 = 42;
 
     public static class MyBeanWrapper {
         public MyBeanWrapper(int type, String title) {
@@ -56,19 +59,30 @@ public class TestItemDecorationUtilActivity extends AppCompatActivity {
                 case TYPE_FULL_TITLE:
                     view.setBackgroundColor(Color.BLUE);
                     break;
+                case TYPE_TITLE_2_ITEM:
+                    view.setBackgroundColor(Color.GREEN);
+                    break;
                 case TYPE_TITLE_3_ITEM:
                     view.setBackgroundColor(Color.RED);
                     break;
                 case TYPE_TITLE_4_ITEM:
                     view.setBackgroundColor(Color.YELLOW);
                     break;
+                case TYPE_TITLE_4_ITEM_2:
+                    view.setBackgroundColor(Color.GRAY);
+                    break;
             }
             return new MyViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-            holder.mTextView.setText(mDataList.get(position).title);
+        public void onBindViewHolder(@NonNull MyViewHolder holder,final int position) {
+            holder.mTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ToastUtil.toast(mDataList.get(position).title);
+                }
+            });
         }
 
         @Override
@@ -113,9 +127,13 @@ public class TestItemDecorationUtilActivity extends AppCompatActivity {
                 switch (mMyBeanWrappers.get(position).type) {
                     case TYPE_FULL_TITLE:
                         return 12;
+                    case TYPE_TITLE_2_ITEM:
+                        return 6;
                     case TYPE_TITLE_3_ITEM:
                         return 4;
                     case TYPE_TITLE_4_ITEM:
+                        return 3;
+                    case TYPE_TITLE_4_ITEM_2:
                         return 3;
                     default:
                         return 12;
@@ -131,24 +149,43 @@ public class TestItemDecorationUtilActivity extends AppCompatActivity {
                 switch (myBeanWrapper.type){
                     case TYPE_FULL_TITLE:
                         break;
+                    case TYPE_TITLE_2_ITEM:
+                        ItemDecorationUtil
+                                .reset()
+                                .setLeftRightSpace(40)
+                                .setVerticalCenterSpace(12)
+                                .setHorizontalCenterSpace(10)
+                                .setBottomSpace(30)
+                                .getItemOffsets(outRect,view,parent,state);
+                        break;
                     case TYPE_TITLE_3_ITEM:
                         ItemDecorationUtil
                                 .reset()
-                                .setLeftRightSpace(15)
-                                .setVerticalCenterSpace(8)
-                                .setHorizontalCenterSpace(8)
-                                .setBottomSpace(15)
+                                .setLeftRightSpace(60)
+                                .setVerticalCenterSpace(12)
+                                .setHorizontalCenterSpace(12)
+                                .setBottomSpace(30)
                                 .getItemOffsets(outRect,view,parent,state);
 
                         break;
                     case TYPE_TITLE_4_ITEM:
                         ItemDecorationUtil
                                 .reset()
-                                .setLeftRightSpace(5)
+                                .setLeftRightSpace(40)
                                 .topIsEqualCenter()
                                 .setVerticalCenterSpace(10)
-                                .setHorizontalCenterSpace(20)
+                                .setHorizontalCenterSpace(10)
                                 .setBottomSpace(55)
+                                .getItemOffsets(outRect,view,parent,state);
+                        break;
+                    case TYPE_TITLE_4_ITEM_2:
+                        ItemDecorationUtil
+                                .reset()
+                                .setLeftRightSpace(0)
+                                .topIsEqualCenter()
+                                .setVerticalCenterSpace(10)
+                                .setHorizontalCenterSpace(15)
+                                .setBottomSpace(0)
                                 .getItemOffsets(outRect,view,parent,state);
                         break;
                 }
@@ -179,7 +216,6 @@ public class TestItemDecorationUtilActivity extends AppCompatActivity {
         mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签3"));
         mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "最后一个标签"));
 
-
         mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "所有科室"));
         mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
         mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
@@ -189,6 +225,23 @@ public class TestItemDecorationUtilActivity extends AppCompatActivity {
         mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
         mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
 
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "所有疾病"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "避孕"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "支气管炎"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "过敏性鼻炎"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "标签1"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "标签2"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "标签3"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "最后一个标签"));
+
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "所有科室"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
+        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
 
         mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "所有科室"));
         mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
