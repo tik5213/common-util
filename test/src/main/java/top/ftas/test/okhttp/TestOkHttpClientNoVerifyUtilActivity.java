@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.io.IOException;
 
-import top.ftas.util.ToastUtil;
+import top.ftas.util.TipUtil;
 import top.ftas.util.okhttp.OkHttpClientNoVerifyUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -45,12 +45,12 @@ public class TestOkHttpClientNoVerifyUtilActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(Call call, IOException e) {
                             e.printStackTrace();
-                            ToastUtil.toast("异常：" + e.getMessage());
+                            TipUtil.toast("异常：" + e.getMessage());
                         }
 
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
-                            ToastUtil.toast("当前天气 ： " + response.body().string());
+                            TipUtil.toast("当前天气 ： " + response.body().string());
                         }
                     });
 

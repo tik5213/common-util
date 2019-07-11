@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.ftas.test.R;
-import top.ftas.util.ToastUtil;
+import top.ftas.util.TipUtil;
 import top.ftas.util.recyclerview.ItemDecorationUtil;
 import top.ftas.dunit.annotation.DUnit;
 
@@ -80,7 +80,7 @@ public class TestItemDecorationUtilActivity extends AppCompatActivity {
             holder.mTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ToastUtil.toast(mDataList.get(position).title);
+                    TipUtil.toast(mDataList.get(position).title);
                 }
             });
         }

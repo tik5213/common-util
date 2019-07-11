@@ -2,7 +2,7 @@ package top.ftas.test.application;
 
 import android.app.Application;
 
-import top.ftas.util.ToastUtil;
+import top.ftas.util.TipUtil;
 
 /**
  * @author tik5213 (yangb@dxy.cn)
@@ -12,6 +12,6 @@ public class MyApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        ToastUtil.setApplicationContext(this);
+        TipUtil.setApplicationContext(this);
     }
 }

@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import cn.ftas.test.R;
-import top.ftas.util.ToastUtil;
+import top.ftas.util.TipUtil;
 import top.ftas.util.bitmap.BitmapSaveUtil;
 import top.ftas.util.bitmap.DisplayBigPictureUtil;
 import top.ftas.util.bitmap.LoadBitmapFromViewUtil;
@@ -101,7 +101,7 @@ public class TestLoadBitmapFromViewUtilActivity extends AppCompatActivity {
 
                 }, throwable -> {
                     //
-                    ToastUtil.toast("异常：",throwable.getMessage());
+                    TipUtil.toast("异常：",throwable.getMessage());
                 });
 
     }

@@ -8,7 +8,7 @@ import android.widget.Toast;
 /**
  * 提示工具类
  */
-public class ToastUtil {
+public class TipUtil {
     private static Context sApplicationContext = null;
 
     public static void setApplicationContext(Context applicationContext) {
