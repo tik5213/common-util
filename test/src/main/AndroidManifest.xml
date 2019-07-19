@@ -33,6 +33,9 @@
         <activity android:name="top.ftas.test.recyclerview.TestItemDecorationUtilActivity" />
         <activity android:name="top.ftas.test.string.TestSpannableStringBuilderActivity" />
 
+        <!-- glide -->
+        <activity android:name="top.ftas.test.glide.TestGlideCutLeftRightBottomTransformActivity" />
+
 
     </application>
 
