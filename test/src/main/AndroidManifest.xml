@@ -36,6 +36,9 @@
         <!-- glide -->
         <activity android:name="top.ftas.test.glide.TestGlideCutLeftRightBottomTransformActivity" />
 
+        <!-- layout -->
+        <activity android:name="top.ftas.test.layout.TestLayoutUtilActivity" />
+
 
     </application>
 

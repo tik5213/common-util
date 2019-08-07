@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import cn.ftas.test.R;
+import top.ftas.test.UrlUtil;
 import top.ftas.util.TipUtil;
 import top.ftas.util.bitmap.BitmapSaveUtil;
 import top.ftas.util.bitmap.DisplayBigPictureUtil;
@@ -54,8 +55,7 @@ public class TestLoadBitmapFromViewUtilActivity extends AppCompatActivity {
         final String date = "2018-10-19";
         final String title = "今日真相题目：生命在于运动还是在于静止？";
         final String KEY_SHARE_BITMAP_NAME_JPG = "share_bitmap_name";
-        final String qrcode = "http://ocean.5166.info:8888/icon/allutils/test_qr_code.jpg";
-        Observable.just(qrcode)
+        Observable.just(UrlUtil.test_qr_code)
                 .subscribeOn(Schedulers.io())
                 .map(qrCodeUrl -> {
                     try {
