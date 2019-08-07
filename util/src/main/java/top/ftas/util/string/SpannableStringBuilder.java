@@ -213,6 +213,8 @@ public class SpannableStringBuilder {
         }
         mHasSetMovementMethod = true;
         textView.setMovementMethod(LinkMovementMethod.getInstance());
+        //点击之后，可点击文字被激活了，所以使用了系统默认的 highlight 颜色。
+        //textView.invalidate(); -> 可以解决 ”一直“ 高亮的问题，不过点击的瞬间会闪现一下高亮的颜色。而 RecyclerView 里面使用则完全不会闪现高亮的颜色。
         textView.setHighlightColor(Color.TRANSPARENT);
     }
 
