@@ -16,9 +16,25 @@
         android:textSize="14sp"
         android:textColor="#999999"
         android:lineSpacingExtra="7sp"
+        android:textColorHighlight="#000000"
         android:gravity="center_horizontal"
         tools:text="医生将在一个工作日内的 09:00-12:00 时间段，主动与你电话联系，请注意接听 156****8304 来电"
         android:layout_marginBottom="34dp"
         />
+
+    <TextView
+        android:textColorHighlight="#000000"
+        android:layout_marginTop="20dp"
+        android:id="@+id/tv_text_orange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingMultiplier="1.2"
+        android:paddingLeft="15dp"
+        android:paddingTop="10dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="10dp"
+        android:textColor="#666666"
+        android:textSize="14sp"
+        tools:text="医生会给出处方建议，支持在线购药，了解安心购药支持在线购药支持在线购药支持在线购药支持在线购药支持在线购药支持在线购药支持在线购药" />
 
 </LinearLayout>

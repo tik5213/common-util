@@ -1,7 +1,9 @@
 package top.ftas.util.string;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.annotation.CheckResult;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.FloatRange;
@@ -30,8 +32,13 @@ public class SpannableStringBuilder {
     public final String TAG = "SpannableStringBuilder";
 
     private Context mContext;
-    SpannableString mSpannableString;
-    CurrentSubStrProperty mCurrentSubStrProperty;
+    private SpannableString mSpannableString;
+    private CurrentSubStrProperty mCurrentSubStrProperty;
+    //是否设置过点击事件
+    private boolean mHasSetOnClickListener;
+    //是否已经设置过 CanMovement
+    private boolean mHasSetMovementMethod;
+    private Manual mManual;
 
     private static class CurrentSubStrProperty{
         String originalStr;
@@ -189,22 +196,35 @@ public class SpannableStringBuilder {
 
     /**
      * 设置 TextView 点击可跳转
-     * @param textView
-     * @return
+     * {@link #into}
+     * @deprecated
      */
     public SpannableStringBuilder setCanMovement(TextView textView){
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        setMovementMethod(textView);
         return this;
     }
 
     /**
+     * 设置 TextView 点击可跳转 ，以及可点击文字的样式
+     */
+    private void setMovementMethod(TextView textView){
+        if (mHasSetMovementMethod){
+            return;
+        }
+        mHasSetMovementMethod = true;
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        textView.setHighlightColor(Color.TRANSPARENT);
+    }
+
+
+    /**
      * 设置点击事件
-     * @return
      *
-     * //记得设置 TextView 允许跳转，不设置点击反应
+     * 记得设置 TextView 允许跳转，不设置点击无反应
      * tv.setMovementMethod(LinkMovementMethod.getInstance());
      */
     public SpannableStringBuilder setOnClickListener(OnClickSpanStringListener clickListener){
+        mHasSetOnClickListener = true;
         for (int i = 0; i < mCurrentSubStrProperty.currentRepeatSize; i++) {
             BuilderClickableSpan builderClickableSpan = new BuilderClickableSpan();
             builderClickableSpan.mSubString = mCurrentSubStrProperty.subStr;
@@ -240,8 +260,70 @@ public class SpannableStringBuilder {
         return this;
     }
 
-    public SpannableString build(){
+    /**
+     * {@link #into}
+     * @deprecated
+     */
+    public @CheckResult SpannableString build(){
         return mSpannableString;
+    }
+
+    /**
+     * 将构建好的 SpannableString 赋值到 TextView
+     */
+    public void into(TextView textView){
+        if (textView == null) return;
+        if (mHasSetOnClickListener){
+            setMovementMethod(textView);
+        }
+        textView.setText(mSpannableString);
+    }
+
+    /**
+     * 在 {@link #into} 不适应的场景下，可手动改造并赋值到 TextView
+     */
+    public Manual manual(){
+        if (mManual == null){
+            mManual = new Manual(this);
+        }
+        return mManual;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ///////////////////////////// 分割线 /////////////////////////////
+    /**
+     * 一些不常用的方法，则封装到 Manual 中，在特殊情况下可以调用。
+     */
+    public static class Manual{
+        SpannableStringBuilder mStringBuilder;
+
+        public Manual(SpannableStringBuilder stringBuilder) {
+            mStringBuilder = stringBuilder;
+        }
+
+        public SpannableStringBuilder builder() {
+            return mStringBuilder;
+        }
+
+        public @CheckResult SpannableString build(){
+            return mStringBuilder.mSpannableString;
+        }
+
+        public Manual setMovementMethod(TextView textView){
+            mStringBuilder.setMovementMethod(textView);
+            return this;
+        }
     }
 
 }
