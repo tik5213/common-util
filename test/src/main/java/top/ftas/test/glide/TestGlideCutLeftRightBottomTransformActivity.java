@@ -10,7 +10,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import cn.ftas.test.R;
 import top.ftas.dunit.annotation.DUnit;
+import top.ftas.test.UrlUtil;
 import top.ftas.util.glide.GlideCutLeftRightBottomTransform;
+import top.ftas.util.glide.GlideLoadImageUtil;
 import top.ftas.util.size.DisplayUtil;
 
 /**
@@ -27,6 +29,14 @@ public class TestGlideCutLeftRightBottomTransformActivity extends AppCompatActiv
         setContentView(R.layout.test_glide_cut_left_right_bottom_transform_layout);
         imageView = findViewById(R.id.image);
         loadImage();
+
+
+        ImageView image_wrap_content = findViewById(R.id.image_wrap_content);
+        GlideLoadImageUtil.loadToWrapContentImageView(image_wrap_content, UrlUtil.ic_label);
+
+
+        ImageView image_wrap_content2 = findViewById(R.id.image_wrap_content2);
+        GlideLoadImageUtil.loadToWrapContentImageView(image_wrap_content2, UrlUtil.banner,8);
     }
 
     private void loadImage() {
