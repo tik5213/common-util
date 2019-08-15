@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="HealthWriteInfoItem">
+    <declare-styleable name="FormInputText">
         <attr name="item_title" format="string" />
         <attr name="item_value_hint" format="string" />
         <attr name="item_editable" format="boolean" />

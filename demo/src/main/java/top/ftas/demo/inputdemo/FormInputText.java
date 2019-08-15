@@ -22,21 +22,21 @@ import cn.ftas.demo.R;
  * @author tik5213 (yangb@dxy.cn)
  * @since 2018-10-21 15:37
  */
-public class HealthWriteInfoItem extends RelativeLayout {
+public class FormInputText extends RelativeLayout {
     TextView tv_item_title;
     EditText et_item_value;
     ImageView iv_item_right_arrow;
     View v_item_bottom_line;
 
-    public HealthWriteInfoItem(Context context) {
+    public FormInputText(Context context) {
         this(context, null);
     }
 
-    public HealthWriteInfoItem(Context context, AttributeSet attrs) {
+    public FormInputText(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public HealthWriteInfoItem(Context context, AttributeSet attrs, int defStyleAttr) {
+    public FormInputText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         LayoutInflater.from(context).inflate(R.layout.app_health_write_info_item, this);
@@ -47,18 +47,18 @@ public class HealthWriteInfoItem extends RelativeLayout {
         v_item_bottom_line = findViewById(R.id.v_item_bottom_line);
 
         final TypedArray a = getContext().obtainStyledAttributes(
-                attrs, R.styleable.HealthWriteInfoItem, defStyleAttr, 0);
-        String title = a.getString(R.styleable.HealthWriteInfoItem_item_title);
-        String hint = a.getString(R.styleable.HealthWriteInfoItem_item_value_hint);
-        boolean editable = a.getBoolean(R.styleable.HealthWriteInfoItem_item_editable, true);
+                attrs, R.styleable.FormInputText, defStyleAttr, 0);
+        String title = a.getString(R.styleable.FormInputText_item_title);
+        String hint = a.getString(R.styleable.FormInputText_item_value_hint);
+        boolean editable = a.getBoolean(R.styleable.FormInputText_item_editable, true);
         //如果不可编辑，则默认显示向右箭头
         //如果可编辑，则默认不显示向右箭头
-        boolean item_show_right_arrow = a.getBoolean(R.styleable.HealthWriteInfoItem_item_show_right_arrow, !editable);
+        boolean item_show_right_arrow = a.getBoolean(R.styleable.FormInputText_item_show_right_arrow, !editable);
         //底部分割线
-        boolean item_show_bottom_line = a.getBoolean(R.styleable.HealthWriteInfoItem_item_show_bottom_line,true);
-        int item_input_type = a.getInt(R.styleable.HealthWriteInfoItem_item_input_type, InputType.TYPE_CLASS_TEXT);
-        int item_max_length = a.getInt(R.styleable.HealthWriteInfoItem_item_max_length, 50);
-        int item_decimal_number = a.getInt(R.styleable.HealthWriteInfoItem_item_decimal_number,-1);
+        boolean item_show_bottom_line = a.getBoolean(R.styleable.FormInputText_item_show_bottom_line,true);
+        int item_input_type = a.getInt(R.styleable.FormInputText_item_input_type, InputType.TYPE_CLASS_TEXT);
+        int item_max_length = a.getInt(R.styleable.FormInputText_item_max_length, 50);
+        int item_decimal_number = a.getInt(R.styleable.FormInputText_item_decimal_number,-1);
 
         a.recycle();
 
@@ -129,7 +129,7 @@ public class HealthWriteInfoItem extends RelativeLayout {
         }
     }
 
-    public HealthWriteInfoItem setItemValueClickListener(OnClickListener onClickListener) {
+    public FormInputText setItemValueClickListener(OnClickListener onClickListener) {
         et_item_value.setOnClickListener(onClickListener);
         return this;
     }
