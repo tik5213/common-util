@@ -44,4 +44,6 @@ dependencies {
 
     //    自定义 RatingBar 可以设置星星之间的距离
     api 'com.github.ome450901:SimpleRatingBar:1.4.2'
+
+    api project(':util')
 }

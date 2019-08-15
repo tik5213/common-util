@@ -16,6 +16,6 @@ public class HealthWriteInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_health_write_info_activity);
+        setContentView(R.layout.test_health_write_info_activity);
     }
 }
