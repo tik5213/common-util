@@ -1,67 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/health_root_layout"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:background="#ffffff">
+    android:layout_height="48dp">
 
-    <TextView
-        android:id="@+id/tv_item_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="15dp"
-        android:layout_centerVertical="true"
-        android:includeFontPadding="false"
-        android:lineSpacingExtra="2sp"
-        android:maxLength="7"
-        android:textColor="#333333"
-        android:textSize="16sp"
-        tools:text="姓名" />
-
-    <EditText
-        android:id="@+id/et_item_value"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="121dp"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/tv_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="2sp"
+            android:maxLength="7"
+            android:textColor="@color/grey2"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="姓名" />
+
+        <EditText
+            android:id="@+id/et_item_value"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="121dp"
+            android:layout_marginRight="0dp"
+            android:background="@null"
+            android:gravity="left|center_vertical"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="2sp"
+            android:maxLines="1"
+            android:textColor="@color/grey2"
+            android:textColorHint="@color/grey6"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/item_right_icon_parent_layout"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginRight="15dp"
+            tools:hint="请选择就诊科室请选择选择就诊科室请选请选择就诊科室请选择选择就诊科室请选请选择就诊科室请选择就诊科室请选"
+            tools:inputType="text"
+            />
+
+        <Button
+            app:layout_constraintLeft_toLeftOf="@id/et_item_value"
+            app:layout_constraintRight_toRightOf="@id/et_item_value"
+            app:layout_constraintTop_toTopOf="@id/et_item_value"
+            app:layout_constraintBottom_toBottomOf="@id/et_item_value"
+            android:id="@+id/btn_value_area_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@null"
+            android:visibility="gone" />
+
+
+        <FrameLayout
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/et_item_value"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/item_right_icon_parent_layout"
+            android:layout_width="38dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_gravity="center"
+                android:id="@+id/iv_item_right_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_lower"
+                android:visibility="visible"
+                />
+
+        </FrameLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <Button
+        android:id="@+id/health_btn_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@null"
-        android:gravity="left"
-        tools:hint="请选择就诊科室请选择选择就诊科室请选请选择就诊科室请选择选择就诊科室请选请选择就诊科室请选择就诊科室请选"
-        android:includeFontPadding="false"
-        tools:inputType="text"
-        android:lineSpacingExtra="2sp"
-        android:maxLines="1"
-        android:paddingRight="38dp"
-        android:textColor="#333333"
-        android:textColorHint="#cccccc"
-        android:textSize="15sp"
-        tools:text="请选择就诊科室请选择就诊科室请选请选择就诊科室请选择就诊科室请选请选择就诊科室请选择就诊科室请选请选择就诊科室请选择就诊科室请选" />
+        android:visibility="gone" />
 
-
-    <ImageView
-        android:id="@+id/iv_item_right_arrow"
-        android:layout_width="8dp"
-        android:layout_height="12.5dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="15dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/icon_lower"
-        android:visibility="gone"
-        tools:visibility="visible" />
 
     <View
         android:id="@+id/v_item_bottom_line"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="15dp"
-        android:background="#ebebeb"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        />
+        android:layout_height="1px"
+        android:layout_gravity="bottom|left"
+        android:layout_marginLeft="15dp"
+        android:background="@color/grey8" />
 
-
-</RelativeLayout>
+</FrameLayout>
