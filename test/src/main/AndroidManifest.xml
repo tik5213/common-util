@@ -39,6 +39,9 @@
         <!-- layout -->
         <activity android:name="top.ftas.test.layout.TestLayoutUtilActivity" />
 
+        <!-- dialog -->
+        <activity android:name="top.ftas.test.dialog.TestDialogTransparentUtilActivity" />
+
 
     </application>
 
