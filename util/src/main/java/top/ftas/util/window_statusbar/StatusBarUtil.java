@@ -87,7 +87,7 @@ public class StatusBarUtil {
      *
      * @return boolean 成功执行返回true
      */
-    public static boolean FlymeSetStatusBarLightMode(Window window, boolean dark) {
+    static boolean FlymeSetStatusBarLightMode(Window window, boolean dark) {
         boolean result = false;
         if(window != null) {
             try {
@@ -123,7 +123,7 @@ public class StatusBarUtil {
      *
      * @return boolean 成功执行返回true
      */
-    public static boolean MIUISetStatusBarLightMode(Window window, boolean dark) {
+    static boolean MIUISetStatusBarLightMode(Window window, boolean dark) {
         boolean result = false;
         if(window != null) {
             Class clazz = window.getClass();
@@ -154,7 +154,7 @@ public class StatusBarUtil {
      *
      * Created by chenlinwei on 2017/7/10.
      */
-    public static class MIUIUtils {
+    static class MIUIUtils {
         private static final String KEY_MIUI_VERSION_CODE = "ro.miui.ui.version.code";
         private static final String KEY_MIUI_VERSION_NAME = "ro.miui.ui.version.name";
         private static final String KEY_MIUI_INTERNAL_STORAGE = "ro.miui.internal.storage";
@@ -180,7 +180,7 @@ public class StatusBarUtil {
     /**
      * TODO 此工具类年久未测，可能已废弃
      */
-    public static class FlymeUtils {
+    static class FlymeUtils {
         public static boolean isFlyme() {
             try {
                 // Invoke Build.hasSmartBar()
@@ -198,7 +198,7 @@ public class StatusBarUtil {
 
 
 
-    public static class BuildProperties {
+    static class BuildProperties {
 
         private final Properties properties;
 
