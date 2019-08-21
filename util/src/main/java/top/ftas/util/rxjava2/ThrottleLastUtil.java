@@ -80,37 +80,40 @@ public class ThrottleLastUtil {
                 fastObservable = fastObservable.delay(mDelayFast, TimeUnit.MILLISECONDS);
             }
 
-            fastObservable.subscribe(new Observer<Boolean>() {
-                @Override
-                public void onSubscribe(Disposable d) {
-                    mFastDisposable = d;
-                }
-
-                @Override
-                public void onNext(Boolean isFast) {
-                    if (isFast) {
-                        listener.subscribeFast();
-                    } else {
-                        listener.subscribeSlow();
-                    }
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    if (mThrowableConsumer != null) {
-                        try {
-                            mThrowableConsumer.accept(e);
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
+            //经过 delay 后，需要再次调用 observeOn ，否则线程不对
+            fastObservable
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Boolean>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            mFastDisposable = d;
                         }
-                    }
-                }
 
-                @Override
-                public void onComplete() {
+                        @Override
+                        public void onNext(Boolean isFast) {
+                            if (isFast) {
+                                listener.subscribeFast();
+                            } else {
+                                listener.subscribeSlow();
+                            }
+                        }
 
-                }
-            });
+                        @Override
+                        public void onError(Throwable e) {
+                            if (mThrowableConsumer != null) {
+                                try {
+                                    mThrowableConsumer.accept(e);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
 
 
             Observable<Boolean> slowObservable = Observable.create(new ObservableOnSubscribe<Boolean>() {
@@ -126,7 +129,9 @@ public class ThrottleLastUtil {
                 slowObservable = slowObservable
                         .delay(mDelaySlow, TimeUnit.MILLISECONDS);
             }
-            slowObservable.observeOn(AndroidSchedulers.mainThread())
+            //经过 delay 后，需要再次调用 observerOn ，否则线程不对。
+            slowObservable
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Boolean>() {
                         @Override
                         public void onSubscribe(Disposable d) {
