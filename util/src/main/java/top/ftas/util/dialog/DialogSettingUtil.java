@@ -2,10 +2,13 @@ package top.ftas.util.dialog;
 
 import android.app.Dialog;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
+import android.view.Display;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -16,7 +19,7 @@ import android.view.WindowManager;
  * @since 2019-08-29 16:38
  */
 public class DialogSettingUtil {
-    private static class BaseHolder {
+    private static class BaseHolder<T> {
         WindowManager.LayoutParams mLayoutParams;
         Dialog mDialog;
         Window mWindow;
@@ -24,6 +27,18 @@ public class DialogSettingUtil {
         BaseHolder(Dialog dialog) {
             mDialog = dialog;
             mWindow = mDialog.getWindow();
+        }
+
+        public T setLayout(int width, int height) {
+            if (mWindow == null) return (T) this;
+            mWindow.setLayout(width, height);
+            return (T) this;
+        }
+
+        public T setLayoutMatchWrap() {
+            if (mWindow == null) return (T) this;
+            mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            return (T) this;
         }
 
         @NonNull
@@ -55,7 +70,7 @@ public class DialogSettingUtil {
     /**
      * 对于 onCreateDialog 方法
      */
-    public static class OnCreateDialogHolder extends BaseHolder {
+    public static class OnCreateDialogHolder extends BaseHolder<OnCreateDialogHolder> {
 
         private OnStartHolder mOnStartHolder;
 
@@ -63,6 +78,32 @@ public class DialogSettingUtil {
             super(dialog);
         }
 
+
+        public OnCreateDialogHolder requestWindowFeature(int featureId) {
+            mDialog.requestWindowFeature(featureId);
+            return this;
+        }
+
+        public OnCreateDialogHolder isNoTitle() {
+            mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            return this;
+        }
+
+        public OnCreateDialogHolder setSoftInputMode(int mode) {
+            if (mWindow == null) return this;
+            mWindow.setSoftInputMode(mode);
+            return this;
+        }
+
+        public OnCreateDialogHolder setDefaultDisplayWidth() {
+            if (mWindow == null) return this;
+            Display display = mWindow.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            getLayoutParams().width = size.x;
+            autoSetAttributes();
+            return this;
+        }
 
         /**
          * 是否可点击空白处取消
@@ -155,7 +196,7 @@ public class DialogSettingUtil {
         /**
          * 支持点透
          */
-        public OnCreateDialogHolder setNotFocusable() {
+        public OnCreateDialogHolder canClickBelowView() {
             getLayoutParams().flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
             autoSetAttributes();
             return this;
@@ -165,7 +206,7 @@ public class DialogSettingUtil {
     /**
      * 对应 onStart 方法
      */
-    public static class OnStartHolder extends BaseHolder {
+    public static class OnStartHolder extends BaseHolder<OnStartHolder> {
         private OnCreateDialogHolder mOnCreateDialogHolder;
 
         OnStartHolder(Dialog dialog) {

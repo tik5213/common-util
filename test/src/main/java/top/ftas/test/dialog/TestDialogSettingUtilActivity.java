@@ -29,6 +29,6 @@ public class TestDialogSettingUtilActivity extends AppCompatActivity {
             }
         });
         setContentView(textView);
-        new KnowRuleBottomFragment().show(getSupportFragmentManager(),"KnowRuleFragment");
+        new TestDialogSettingUtilBottomFragment().show(getSupportFragmentManager(),"KnowRuleFragment");
     }
 }

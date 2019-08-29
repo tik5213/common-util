@@ -8,18 +8,16 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import cn.ftas.test.R;
 import top.ftas.util.dialog.DialogSettingUtil;
-import top.ftas.util.dialog.DialogTransparentUtil;
 
 /**
  * @author tik5213 (yangb@dxy.cn)
  * @since 2018-11-21 11:37
  */
-public class KnowRuleBottomFragment extends DialogFragment {
+public class TestDialogSettingUtilBottomFragment extends DialogFragment {
 
     @Override
     public void onStart() {
@@ -45,9 +43,8 @@ public class KnowRuleBottomFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return DialogSettingUtil
                 .onCreateDialog(super.onCreateDialog(savedInstanceState))
-                .setCanceledOnTouchOutside(true)
                 .setContentTransparent()
-                .setNotFocusable()
+                .canClickBelowView()
                 .setBottomCenter()
                 .toDialog();
     }
