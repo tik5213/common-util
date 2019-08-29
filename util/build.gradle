@@ -54,7 +54,7 @@ publish {
     userOrg = 'tik'
     groupId = 'top.ftas'
     artifactId = 'common-util'
-    publishVersion = '2.0'
+    publishVersion = '2.1'
     desc = 'common-util'
     website = 'https://github.com/tik5213/common-util'
 }
