@@ -41,6 +41,7 @@
 
         <!-- dialog -->
         <activity android:name="top.ftas.test.dialog.TestDialogTransparentUtilActivity" />
+        <activity android:name="top.ftas.test.dialog.TestDialogSettingUtilActivity" />
 
 
     </application>

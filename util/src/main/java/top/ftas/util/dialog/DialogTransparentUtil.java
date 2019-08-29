@@ -10,15 +10,34 @@ import android.view.WindowManager;
 
 /**
  * 将 Dialog 设置为透明，以便可以为 Dialog 背景设置圆角 shape
+ *
  * @author tik5213 (yangb@dxy.cn)
  * @since 2019-08-19 12:11
  */
 public class DialogTransparentUtil {
+    /**
+     * 创建一个透明的 Dialog，支持在 DialogFragment 上设置圆角图
+     */
     public static Dialog onCreateDialog(Dialog dialog) {
         return onCreateDialog(dialog, null);
     }
 
+    /**
+     * 创建一个透明的 Dialog，支持在 DialogFragment 上设置圆角图
+     */
     public static Dialog onCreateDialog(Dialog dialog, @Nullable Boolean canceledOnTouchOutside) {
+        return onCreateDialog(dialog, canceledOnTouchOutside, Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+    }
+
+
+    /**
+     * 创建一个透明的 Dialog，支持在 DialogFragment 上设置圆角图片
+     *
+     * @param dialog                 dialog
+     * @param canceledOnTouchOutside 点击空白外是否可取消
+     * @param gravity                dialog 位置
+     */
+    public static Dialog onCreateDialog(Dialog dialog, @Nullable Boolean canceledOnTouchOutside, int gravity) {
         if (canceledOnTouchOutside != null) {
             dialog.setCanceledOnTouchOutside(canceledOnTouchOutside);
         }
@@ -29,7 +48,7 @@ public class DialogTransparentUtil {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
             WindowManager.LayoutParams lp = window.getAttributes();
-            window.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+            window.setGravity(gravity);
             window.setAttributes(lp);
 
         }
