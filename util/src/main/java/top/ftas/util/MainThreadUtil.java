@@ -22,6 +22,12 @@ public class MainThreadUtil {
         return sMainHandler;
     }
 
+    /**
+     * 如果想要清除 Handler ，或者共享某个 Handler，可以使用此方法
+     */
+    public static void setMainHandler(Handler mainHandler) {
+        sMainHandler = mainHandler;
+    }
 
     public static void post(Runnable runnable) {
         getMainHandler().post(runnable);
