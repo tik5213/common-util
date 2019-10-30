@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 /**
+ * 常用金额转换工具类
  * @author tik5213 (yangb@dxy.cn)
  * @since 2018-10-30 09:59
  */
