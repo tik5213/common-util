@@ -1,4 +1,4 @@
-package top.ftas.test;
+package top.ftas.test.window_statusbar;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +12,7 @@ import top.ftas.dunit.annotation.DUnit;
  * @author tik5213 (yangb@dxy.cn)
  * @since 2018-08-27 23:20
  */
-@DUnit
+@DUnit(group = WindowStatusbarGroup.class)
 public class TestTranslucentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

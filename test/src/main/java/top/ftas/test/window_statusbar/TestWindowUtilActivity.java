@@ -1,4 +1,4 @@
-package top.ftas.test;
+package top.ftas.test.window_statusbar;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -16,7 +16,7 @@ import top.ftas.dunit.annotation.DUnit;
  * @author tik5213 (yangb@dxy.cn)
  * @since 2018-08-27 12:44
  */
-@DUnit
+@DUnit(group = WindowStatusbarGroup.class)
 public class TestWindowUtilActivity extends AppCompatActivity {
     private Activity mActivity;
 

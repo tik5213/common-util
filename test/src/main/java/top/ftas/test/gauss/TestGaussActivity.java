@@ -1,4 +1,4 @@
-package top.ftas.test;
+package top.ftas.test.gauss;
 
 import android.app.Activity;
 import android.graphics.Bitmap;

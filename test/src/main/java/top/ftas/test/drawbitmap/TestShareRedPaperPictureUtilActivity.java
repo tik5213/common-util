@@ -1,4 +1,4 @@
-package top.ftas.test;
+package top.ftas.test.drawbitmap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,7 +19,7 @@ import top.ftas.dunit.annotation.DUnit;
  * @author tik5213 (yangb@dxy.cn)
  * @since 2018-08-27 23:50
  */
-@DUnit
+@DUnit(group = DrawBitmapGroup.class)
 public class TestShareRedPaperPictureUtilActivity extends AppCompatActivity{
     ImageView iv_share;
     private Context mContext;

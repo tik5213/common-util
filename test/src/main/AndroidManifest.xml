@@ -21,13 +21,13 @@
         </activity>
         <activity android:name="top.ftas.dunit.activity.SingleFragmentActivity" />
         <activity android:name="top.ftas.dunit.activity.SingleSupportFragmentActivity" />
-        <activity android:name="top.ftas.test.TestWindowUtilActivity" />
-        <activity android:name="top.ftas.test.TestWindowFullScreenUtilActivity" />
-        <activity android:name="top.ftas.test.TestGaussActivity" />
-        <activity android:name="top.ftas.test.TestTranslucentActivity"
+        <activity android:name="top.ftas.test.window_statusbar.TestWindowUtilActivity" />
+        <activity android:name="top.ftas.test.window_statusbar.TestWindowFullScreenUtilActivity" />
+        <activity android:name="top.ftas.test.gauss.TestGaussActivity" />
+        <activity android:name="top.ftas.test.window_statusbar.TestTranslucentActivity"
             android:theme="@style/UtilSupport.TranslucentDefault"
             />
-        <activity android:name="top.ftas.test.TestShareRedPaperPictureUtilActivity" />
+        <activity android:name="top.ftas.test.drawbitmap.TestShareRedPaperPictureUtilActivity" />
         <activity android:name="top.ftas.test.okhttp.TestOkHttpClientNoVerifyUtilActivity" />
         <activity android:name="top.ftas.test.bitmap.TestLoadBitmapFromViewUtilActivity" />
         <activity android:name="top.ftas.test.recyclerview.TestItemDecorationUtilActivity" />
