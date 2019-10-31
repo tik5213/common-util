@@ -1,9 +1,9 @@
-package top.ftas.test.drawbitmap;
+package top.ftas.test.bitmap;
 
 import top.ftas.dunit.group.DUnitRootGroup;
 
 /**
  * Created by tik on 2019-10-31.
  */
-public class DrawBitmapGroup extends DUnitRootGroup {
+public class BitmapGroup extends DUnitRootGroup {
 }

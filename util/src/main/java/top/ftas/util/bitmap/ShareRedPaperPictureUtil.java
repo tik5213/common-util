@@ -1,4 +1,4 @@
-package top.ftas.util.drawbitmap;
+package top.ftas.util.bitmap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -68,11 +68,11 @@ public class ShareRedPaperPictureUtil {
     public static @Nullable
     String createRedPaperBitmapAndSave(Context context, ShareRedPaperPictureCreateBean pictureCreateBean) {
         Bitmap bitmap = createRedPaperBitmap(context, pictureCreateBean);
-        if (bitmap != null){
-            String picPath = saveRedPaperBitmap(context,bitmap);
+        if (bitmap != null) {
+            String picPath = saveRedPaperBitmap(context, bitmap);
             bitmap.recycle();
             return picPath;
-        }else {
+        } else {
             return "";
         }
     }
@@ -80,7 +80,7 @@ public class ShareRedPaperPictureUtil {
 
     public static @Nullable
     String saveRedPaperBitmap(Context context, Bitmap bitmap) {
-        if (bitmap == null){
+        if (bitmap == null) {
             return null;
         }
         return saveBitmapToSDCard(context, bitmap, "share_red_paper_picture.png");
@@ -88,12 +88,13 @@ public class ShareRedPaperPictureUtil {
 
     public static @Nullable
     Bitmap createRedPaperBitmap(Context context, ShareRedPaperPictureCreateBean pictureCreateBean) {
-        if (pictureCreateBean.doctorIcon == null || pictureCreateBean.miniProgramQrCode == null) return null;
+        if (pictureCreateBean.doctorIcon == null || pictureCreateBean.miniProgramQrCode == null)
+            return null;
 
         //背景图
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inMutable = true;
-        Bitmap im_bg_share_coupon = BitmapFactory.decodeResource(context.getResources(), R.raw.im_bg_share_coupon,options);
+        Bitmap im_bg_share_coupon = BitmapFactory.decodeResource(context.getResources(), R.raw.im_bg_share_coupon, options);
 
         int bgWidth = im_bg_share_coupon.getWidth();
         int half_BgWidth = bgWidth / 2;
@@ -113,27 +114,27 @@ public class ShareRedPaperPictureUtil {
         int doctorIconWidth = (int) (45 * scale);
         int doctorIconHeight = doctorIconWidth;
         int half_doctorHeight = doctorIconHeight / 2;
-        int doctorIconRadius =half_doctorHeight;
+        int doctorIconRadius = half_doctorHeight;
         int doctorIconLeft = (bgWidth - doctorIconWidth) / 2;
         float doctorIconCenterY = 52 * scale;
         float doctorIconTop = doctorIconCenterY - half_doctorHeight;
-        Bitmap circleDoctorIcon = circleBitmapByShader(pictureCreateBean.doctorIcon,doctorIconWidth,doctorIconRadius);
+        Bitmap circleDoctorIcon = circleBitmapByShader(pictureCreateBean.doctorIcon, doctorIconWidth, doctorIconRadius);
         canvas.drawBitmap(circleDoctorIcon, doctorIconLeft, doctorIconTop, paint);
         circleDoctorIcon.recycle();
 
 
         /***绘制-分享红包者的名字***/
-        if (!TextUtils.isEmpty(pictureCreateBean.topLetter)){
+        if (!TextUtils.isEmpty(pictureCreateBean.topLetter)) {
             //设置 14号 文字
             setTextRegular(paint);
-            resetPaintTextStyle(paint, Paint.Align.CENTER,"#333333",14 * scale);
+            resetPaintTextStyle(paint, Paint.Align.CENTER, "#333333", 14 * scale);
 
             Paint.FontMetrics shareMsgFontMetrics = paint.getFontMetrics();
             //当从顶部开始绘绘图时，baseLine的Y坐标
-            float shareMsgTextBaseLineY = - shareMsgFontMetrics.top ;
+            float shareMsgTextBaseLineY = -shareMsgFontMetrics.top;
             //从医生头像位置，向下移动 5dp，绘制 你的好友王璐璐，送你丁香医生大礼包
             shareMsgTextBaseLineY += doctorIconCenterY + half_doctorHeight + 5 * scale;
-            canvas.drawText(pictureCreateBean.topLetter,half_BgWidth,shareMsgTextBaseLineY,paint);
+            canvas.drawText(pictureCreateBean.topLetter, half_BgWidth, shareMsgTextBaseLineY, paint);
         }
 
 
@@ -141,23 +142,23 @@ public class ShareRedPaperPictureUtil {
         setTextSemibold(paint);
         /***计算-顶部的金额￥号***/
         //设置 29号 文字
-        resetPaintTextStyle(paint, Paint.Align.LEFT,"#ff5b5b",29 * scale);
+        resetPaintTextStyle(paint, Paint.Align.LEFT, "#ff5b5b", 29 * scale);
 
         PointF topMoneyPointPointF = new PointF();
-        Rect topMoneyPointRect = calculateTextBaseLineY("￥",paint,28.5f * scale,34 * scale,topMoneyPointPointF);
+        Rect topMoneyPointRect = calculateTextBaseLineY("￥", paint, 28.5f * scale, 34 * scale, topMoneyPointPointF);
         topMoneyPointPointF.y += 108.5f * scale;
 
 
         /***计算-顶部的金额数值***/
         //设置 39.9号 文字
-        resetPaintTextStyle(paint, Paint.Align.LEFT,"#ff5b5b",39.9f * scale);
+        resetPaintTextStyle(paint, Paint.Align.LEFT, "#ff5b5b", 39.9f * scale);
         //由于设计稿上面写的是54，那么这里根据 54 这个数值来计算出文字的左右间隙，并作为这个字号的标准间隙
         PointF base_topMoneyValuePointF = new PointF();
-        calculateTextBaseLineY("54",paint,48 * scale,0,base_topMoneyValuePointF);
+        calculateTextBaseLineY("54", paint, 48 * scale, 0, base_topMoneyValuePointF);
 
         PointF topMoneyValuePointF = new PointF();
         String redPaperMoneyStr = pictureCreateBean.redPaperMoney + "";
-        Rect topMoneyValueRect = calculateTextBaseLineY(redPaperMoneyStr,paint,0,38 * scale,topMoneyValuePointF);
+        Rect topMoneyValueRect = calculateTextBaseLineY(redPaperMoneyStr, paint, 0, 38 * scale, topMoneyValuePointF);
         // 106.5 为Zeplin上测试出来的文字到顶部的距离
         topMoneyValuePointF.y += 106.5f * scale;
 
@@ -169,10 +170,10 @@ public class ShareRedPaperPictureUtil {
         //计算两个文本之间的公共间隙 5.1 为Zeplin上测试出来的两个文字的间隙
         float topAllTextPublicSpace = 5.1f * scale;
         //统计两个文字实际显示的宽度（包含各自的文字间隙和公共间隙）
-        float topAllTextDisplayWidthWithSpace = topAllTextDisplayWidthNoSpace + topAllTextSelfSpace  + topAllTextPublicSpace;
+        float topAllTextDisplayWidthWithSpace = topAllTextDisplayWidthNoSpace + topAllTextSelfSpace + topAllTextPublicSpace;
 
         //计算左边第一个文字实际显示的点到最左侧的距离
-        float topLeftTextDisplayX = ( bgWidth - topAllTextDisplayWidthWithSpace ) / 2;
+        float topLeftTextDisplayX = (bgWidth - topAllTextDisplayWidthWithSpace) / 2;
         //计算左边第一个文字的左侧绘制点
         float topLeftTextDrawX = topLeftTextDisplayX - topMoneyPointPointF.x;
 
@@ -181,71 +182,71 @@ public class ShareRedPaperPictureUtil {
 
 
         /***绘制-顶部的金额￥号***/
-        resetPaintTextStyle(paint, Paint.Align.LEFT,"#ff5b5b",29 * scale);
-        canvas.drawText("￥",topLeftTextDrawX,topMoneyPointPointF.y,paint);
+        resetPaintTextStyle(paint, Paint.Align.LEFT, "#ff5b5b", 29 * scale);
+        canvas.drawText("￥", topLeftTextDrawX, topMoneyPointPointF.y, paint);
 
         /***绘制-顶部的金额数值***/
-        resetPaintTextStyle(paint, Paint.Align.LEFT,"#ff5b5b",39.9f * scale);
-        canvas.drawText(redPaperMoneyStr,topRightTextDrawX,topMoneyValuePointF.y,paint);
+        resetPaintTextStyle(paint, Paint.Align.LEFT, "#ff5b5b", 39.9f * scale);
+        canvas.drawText(redPaperMoneyStr, topRightTextDrawX, topMoneyValuePointF.y, paint);
         /***************************绘制双文本居中-end***************************/
 
 
         /***********坐标平移到左下角**********/
-        canvas.translate(0,bgHeight);
+        canvas.translate(0, bgHeight);
 
         /***绘制-底部的金额数值***/
         setTextSemibold(paint);
         float bottomMoneyStrLeft = 15 * scale;
         float bottomMoneyStrUseWidth = 0;
-        if (!TextUtils.isEmpty(pictureCreateBean.bottomEm)){
+        if (!TextUtils.isEmpty(pictureCreateBean.bottomEm)) {
             String bottomMoneyStr = pictureCreateBean.bottomEm;
             //设置 25号字
-            resetPaintTextStyle(paint, Paint.Align.LEFT,"#ff5b5b",25f * scale);
-            drawBottomText(canvas,paint,bottomMoneyStrLeft,53 * scale,bottomMoneyStr);
+            resetPaintTextStyle(paint, Paint.Align.LEFT, "#ff5b5b", 25f * scale);
+            drawBottomText(canvas, paint, bottomMoneyStrLeft, 53 * scale, bottomMoneyStr);
             //计算底部左边金额数据占用的宽度
             bottomMoneyStrUseWidth = paint.measureText(bottomMoneyStr);
         }
 
 
         /***绘制-底部金额结束语***/
-        if (!TextUtils.isEmpty(pictureCreateBean.bottomTitle)){
+        if (!TextUtils.isEmpty(pictureCreateBean.bottomTitle)) {
             //设置18号字
-            resetPaintTextStyle(paint, Paint.Align.LEFT,"#333333",18f * scale);
+            resetPaintTextStyle(paint, Paint.Align.LEFT, "#333333", 18f * scale);
             //计算底部金额结束语到左侧的距离
             float bottomMoneyEndStrLeft = bottomMoneyStrLeft + bottomMoneyStrUseWidth + 2 * scale;
-            drawBottomText(canvas,paint,bottomMoneyEndStrLeft,54 * scale,pictureCreateBean.bottomTitle);
+            drawBottomText(canvas, paint, bottomMoneyEndStrLeft, 54 * scale, pictureCreateBean.bottomTitle);
         }
 
         /***绘制-底部长按识别二维码提示语***/
-        if (!TextUtils.isEmpty(pictureCreateBean.bottomSubTitle)){
+        if (!TextUtils.isEmpty(pictureCreateBean.bottomSubTitle)) {
             setTextRegular(paint);
             //设置12号字
-            resetPaintTextStyle(paint, Paint.Align.LEFT,"#999999",12f * scale);
-            drawBottomText(canvas,paint,15 * scale,31 * scale,pictureCreateBean.bottomSubTitle);
+            resetPaintTextStyle(paint, Paint.Align.LEFT, "#999999", 12f * scale);
+            drawBottomText(canvas, paint, 15 * scale, 31 * scale, pictureCreateBean.bottomSubTitle);
         }
 
         /***绘制-二维码小程序***/
         float miniProgramQrCodeWidth = 80 * scale;
         float miniProgramQrCodeHeight = miniProgramQrCodeWidth;
         float miniProgramQrCodeLeft = bgWidth - 15 * scale - miniProgramQrCodeWidth;
-        float miniProgramQrCodeTop = - 10 * scale -  miniProgramQrCodeHeight;
+        float miniProgramQrCodeTop = -10 * scale - miniProgramQrCodeHeight;
 
         /***********坐标平移到小程序码的左上角**********/
         float translateMiniProgramQrCodeDx = bgWidth - miniProgramQrCodeWidth - 15 * scale;
-        float translateMiniProgramQrCodeDy = - miniProgramQrCodeHeight - 10 * scale;
+        float translateMiniProgramQrCodeDy = -miniProgramQrCodeHeight - 10 * scale;
 
-        canvas.translate(translateMiniProgramQrCodeDx,translateMiniProgramQrCodeDy);
-        Matrix miniProgramQrCodeMatrix = zoomImgMatrix(pictureCreateBean.miniProgramQrCode,miniProgramQrCodeWidth,miniProgramQrCodeHeight);
-        canvas.drawBitmap(pictureCreateBean.miniProgramQrCode,miniProgramQrCodeMatrix,paint);
+        canvas.translate(translateMiniProgramQrCodeDx, translateMiniProgramQrCodeDy);
+        Matrix miniProgramQrCodeMatrix = zoomImgMatrix(pictureCreateBean.miniProgramQrCode, miniProgramQrCodeWidth, miniProgramQrCodeHeight);
+        canvas.drawBitmap(pictureCreateBean.miniProgramQrCode, miniProgramQrCodeMatrix, paint);
 
         return im_bg_share_coupon;
     }
 
-    public static void setTextSemibold(Paint paint){
+    public static void setTextSemibold(Paint paint) {
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
     }
 
-    public static void setTextRegular(Paint paint){
+    public static void setTextRegular(Paint paint) {
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
     }
 
@@ -260,20 +261,22 @@ public class ShareRedPaperPictureUtil {
         上面，网上流行的这一套计算方式会因为程序文字默认的padding值和设计师的不一样，而产生一些位置偏差
 
      */
+
     /**
      * 以左上角为坐标原点，计算文字基线的Y坐标，返回值可传递给drawText函数，绘制出来的文字和设计师给出的文字间隙一样。
      * pointF.y 是可以直接使用 ， pointF.x 表示的是文字的的左侧（或右侧）间隙，如果要以原点开始写字，一般取负，即 - pointF.x
      * 特别注意，记得进行坐标转换，将返回值加上在Zeplin.app上测试出来的文字到页面顶部的距离才是文字实际的基线坐标
      * 下面这一套自创的计算方式解决了设计师文字padding与程序内部文字padding不一样的问题
+     *
      * @param str
      * @param paint
      * @param textViewFullHeight
      * @return
      */
-    public static Rect calculateTextBaseLineY(String str, Paint paint, float textViewFullWidth, float textViewFullHeight, PointF pointF){
+    public static Rect calculateTextBaseLineY(String str, Paint paint, float textViewFullWidth, float textViewFullHeight, PointF pointF) {
         //下面获取文字的实际显示区域高度
         Rect topMoneyValueTextBounds = new Rect();
-        paint.getTextBounds(str,0,str.length(),topMoneyValueTextBounds);
+        paint.getTextBounds(str, 0, str.length(), topMoneyValueTextBounds);
         float topMoneyValueTextDisplayHeight = topMoneyValueTextBounds.height();
         float textDisplayWidth = topMoneyValueTextBounds.width();
 
@@ -291,7 +294,7 @@ public class ShareRedPaperPictureUtil {
     /**
      * 缩放图片
      */
-    public static Matrix zoomImgMatrix(Bitmap bm, float newWidth , float newHeight){
+    public static Matrix zoomImgMatrix(Bitmap bm, float newWidth, float newHeight) {
         // 获得图片的宽高
         int width = bm.getWidth();
         int height = bm.getHeight();
@@ -307,17 +310,13 @@ public class ShareRedPaperPictureUtil {
     /**
      * 利用BitmapShader绘制底部圆角图片
      *
-     * @param bitmap
-     *              待处理图片
-     * @param edgeWidth
-     *              正方形控件大小
-     * @param radius
-     *              圆角半径大小
-     * @return
-     *              结果图片
+     * @param bitmap    待处理图片
+     * @param edgeWidth 正方形控件大小
+     * @param radius    圆角半径大小
+     * @return 结果图片
      */
     public static Bitmap circleBitmapByShader(Bitmap bitmap, int edgeWidth, int radius) {
-        if(bitmap == null) {
+        if (bitmap == null) {
             throw new NullPointerException("Bitmap can't be null");
         }
 
@@ -329,7 +328,7 @@ public class ShareRedPaperPictureUtil {
         float btHeightCutSite = 0;
         // 裁剪成正方形图片的边长，未拉伸缩放
         float squareWidth = 0f;
-        if(btWidth > btHeight) { // 如果矩形宽度大于高度
+        if (btWidth > btHeight) { // 如果矩形宽度大于高度
             btWidthCutSite = (btWidth - btHeight) / 2f;
             squareWidth = btHeight;
         } else { // 如果矩形宽度不大于高度
@@ -343,7 +342,7 @@ public class ShareRedPaperPictureUtil {
         matrix.setScale(scale, scale);
 
         // 将矩形图片裁剪成正方形并拉伸缩放到控件大小
-        Bitmap squareBt = Bitmap.createBitmap(bitmap, (int)btWidthCutSite, (int)btHeightCutSite, (int)squareWidth, (int)squareWidth, matrix, true);
+        Bitmap squareBt = Bitmap.createBitmap(bitmap, (int) btWidthCutSite, (int) btHeightCutSite, (int) squareWidth, (int) squareWidth, matrix, true);
 
         // 初始化绘制纹理图
         BitmapShader bitmapShader = new BitmapShader(squareBt, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
@@ -369,7 +368,7 @@ public class ShareRedPaperPictureUtil {
     /**
      * 缩放图片
      */
-    public static Bitmap zoomImg(Bitmap bm, float newWidth , float newHeight){
+    public static Bitmap zoomImg(Bitmap bm, float newWidth, float newHeight) {
         // 获得图片的宽高
         int width = bm.getWidth();
         int height = bm.getHeight();
@@ -387,37 +386,61 @@ public class ShareRedPaperPictureUtil {
     /*
      * 调用这个函数的前提是将坐标原点从初始位置移动到了左下角。这个时候，Y值全部变成了负值。不过传入的时候，只需要传递目标对象到底部的绝对值就好了
      */
-    public static void drawBottomText(Canvas canvas, Paint paint, float left, float bottom, String strMsg){
+    public static void drawBottomText(Canvas canvas, Paint paint, float left, float bottom, String strMsg) {
         Paint.FontMetrics paintFontMetrics = paint.getFontMetrics();
-        float baseLineY = - paintFontMetrics.bottom;
+        float baseLineY = -paintFontMetrics.bottom;
         baseLineY -= bottom;
-        canvas.drawText(strMsg,left,baseLineY,paint);
+        canvas.drawText(strMsg, left, baseLineY, paint);
     }
 
     /*
      * 调用这个函数的前提是将坐标原点从初始位置移动到了左下角。这个时候，Y值全部变成了负值。不过传入的时候，只需要传递目标对象到底部的绝对值就好了
      */
-    public static void drawBottomTextUseFontMetrics(Canvas canvas, Paint paint, float scale, float dp_left, float dp_bottom, String strMsg){
+    public static void drawBottomTextUseFontMetrics(Canvas canvas, Paint paint, float scale, float dp_left, float dp_bottom, String strMsg) {
         dp_bottom = dp_bottom * scale;
         dp_left = dp_left * scale;
         Paint.FontMetrics paintFontMetrics = paint.getFontMetrics();
-        float baseLineY = - paintFontMetrics.bottom;
+        float baseLineY = -paintFontMetrics.bottom;
         baseLineY -= dp_bottom;
-        canvas.drawText(strMsg,dp_left,baseLineY,paint);
+        canvas.drawText(strMsg, dp_left, baseLineY, paint);
     }
 
     /**
      * 重置画笔
+     *
      * @param paint
      * @param align
      * @param colorString
      * @param textSize
      */
-    public static void resetPaintTextStyle(Paint paint, Paint.Align align, String colorString, float textSize){
+    public static void resetPaintTextStyle(Paint paint, Paint.Align align, String colorString, float textSize) {
         //该方法即为设置基线上那个点究竟是left,center,还是right
         paint.setTextAlign(align);
         paint.setColor(Color.parseColor(colorString));
         paint.setTextSize(textSize);
+    }
+
+
+    public static class ShareRedPaperPictureCreateBean {
+        public int redPaperMoney = 0;
+
+        public Bitmap doctorIcon;
+        public Bitmap miniProgramQrCode;
+
+        public String topLetter;
+        public String bottomEm;
+        public String bottomTitle;
+        public String bottomSubTitle;
+
+        public void recycle() {
+            if (doctorIcon != null && !doctorIcon.isRecycled()) {
+                doctorIcon.recycle();
+            }
+
+            if (miniProgramQrCode != null && !miniProgramQrCode.isRecycled()) {
+                miniProgramQrCode.recycle();
+            }
+        }
     }
 
 }

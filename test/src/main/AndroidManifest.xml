@@ -27,7 +27,7 @@
         <activity android:name="top.ftas.test.window_statusbar.TestTranslucentActivity"
             android:theme="@style/UtilSupport.TranslucentDefault"
             />
-        <activity android:name="top.ftas.test.drawbitmap.TestShareRedPaperPictureUtilActivity" />
+        <activity android:name="top.ftas.test.bitmap.TestShareRedPaperPictureUtilActivity" />
         <activity android:name="top.ftas.test.okhttp.TestOkHttpClientNoVerifyUtilActivity" />
         <activity android:name="top.ftas.test.bitmap.TestLoadBitmapFromViewUtilActivity" />
         <activity android:name="top.ftas.test.recyclerview.TestItemDecorationUtilActivity" />
