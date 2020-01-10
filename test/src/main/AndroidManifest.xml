@@ -45,6 +45,7 @@
         <activity android:name="top.ftas.test.recyclerview.TestItemDecorationDividerActivity1" />
         <activity android:name="top.ftas.test.recyclerview.TestItemDecorationDividerActivity2" />
         <activity android:name="top.ftas.test.recyclerview.TestItemDecorationDividerActivity3" />
+        <activity android:name="top.ftas.test.recyclerview.TestItemDecorationDividerActivity4" />
 
 
     </application>

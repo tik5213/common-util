@@ -2,11 +2,12 @@ package top.ftas.util.recyclerview;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,12 +24,21 @@ import android.view.View;
  * 不可使用的样式：一堆 A 小标签 -> 一堆 B 小标签 这种小标签混排的样式
  * 可使用的样式：大标签与各种小标签相互交替
  *
+ * ItemDecorationUtil.setDefaultDividerId(R.drawable.layer_list_listview_divider);
+ * 可全局设置分割线的样式
+ *
  *
  * 优先级 getItemOffsets_GridLayoutManager：isAutoResetHolderFreeze -> resetForGetItemOffsets -> hideOffsetAtPosition -> isShowDividerLine -> 正常绘制 Item 空隙
  * 优先级 getItemOffsets_LinearLayoutManager：isAutoResetHolderFreeze -> resetForGetItemOffsets -> hideOffsetAtPosition -> isShowDividerLine -> 正常绘制 Item 空隙
  * 优先级 onDraw：isForceNotDrawAnyFreeze -> isAutoResetHolderFreeze -> resetForOnDraw -> hideOffsetAtPosition -> isShowDividerLine -> 绘制分割线
  *
+ * DecorationConfig 类中不应当存储成员变量。
+ * DecorationConfig 类中的方法的返回值优先级永远大于 set 设置的属性值
+ *
  * 所有带有 freeze 标记属性，都不会被 reset 方法处理
+ *
+ * 只有 {@link ItemDecorationUtil#buildDivider} 和 {@link DecorationDividerConfig} 类会自动将 mIsForceNotDrawAnyFreeze 置为 false，（{@link ItemDecorationUtilHolder#setShowDividerLine(boolean)} ）
+ * 其它都需要手动调用 {@link ItemDecorationUtil#setShowDividerLine()}，否则分割线可能不出现。
  */
 public class ItemDecorationUtil {
     //默认的分割线 id
@@ -96,6 +106,9 @@ public class ItemDecorationUtil {
         }
     }
 
+    /**
+     * 分割线配置类
+     */
     public static class DecorationConfig {
         private ItemDecorationUtilHolder mHolder;
 
@@ -118,8 +131,8 @@ public class ItemDecorationUtil {
 
         /**
          * 是否自动重置 Holder
-         * 是否自动重置 Holder，默认不自动重置 Holder。
-         * 如果需要默认自动重置 Holder 请使用 {@link DecorationResetConfig#isAutoResetHolderFreeze}
+         * 如果设置了自定义的 Config ，默认会自动重置 Holder
+         * 如果没有设置自定义的 Config ，默认不会自动重置 Holder， 请使用 {@link ItemDecorationUtilHolder#setAutoResetHolderFreeze(boolean)}
          */
         public boolean isAutoResetHolderFreeze(){
             return mHolder.mIsAutoResetHolderFreeze;
@@ -144,9 +157,20 @@ public class ItemDecorationUtil {
         /**
          * 获取分割线的 Drawable 对象。
          */
-        public @Nullable Drawable getDividerDrawable(Context context, int position) {
-            if (mHolder.mDivider == null && getDividerDrawableId(position) != -1) {
-                mHolder.mDivider = ContextCompat.getDrawable(context, getDividerDrawableId(position));
+        public @NonNull Drawable getDividerDrawable(Context context, int position) {
+            if (mHolder.mDivider == null) {
+                if (getDividerDrawableId(position) != -1){
+                    mHolder.mDivider = ContextCompat.getDrawable(context, getDividerDrawableId(position));
+                }
+                if (mHolder.mDivider == null){
+                    //默认
+                    mHolder.mDivider = new ColorDrawable(Color.parseColor("#ebebeb")){
+                        @Override
+                        public int getIntrinsicHeight() {
+                            return 1;
+                        }
+                    };
+                }
             }
             return mHolder.mDivider;
         }
@@ -173,7 +197,7 @@ public class ItemDecorationUtil {
         }
 
         public @DrawableRes int getDividerDrawableId(int position){
-            return sDefaultDividerId;
+            return mHolder.mDividerDrawableIdFreeze;
         }
     }
 
@@ -205,6 +229,8 @@ public class ItemDecorationUtil {
          * 如果没有设置用户自定义的 Config，会使用 {@link DefaultDecorationConfig#isAutoResetHolderFreeze()}，默认不自动重置 Holder
          */
         private boolean mIsAutoResetHolderFreeze = true;
+        //分割线的 Drawable Id
+        private int mDividerDrawableIdFreeze = sDefaultDividerId;
 
         /**
          * 重置此分割线配置器，参数还原到默认值。
@@ -240,7 +266,7 @@ public class ItemDecorationUtil {
         }
 
         /**
-         * 强制不绘制任何内容
+         * 设置是否强制不绘制任何内容
          */
         public ItemDecorationUtilHolder setForceNotDrawAnyFreeze(boolean forceNotDrawAnyFreeze) {
             mIsForceNotDrawAnyFreeze = forceNotDrawAnyFreeze;
@@ -249,10 +275,18 @@ public class ItemDecorationUtil {
 
         /**
          * 设置是否自动重置 Holder
-         * @param autoResetHolderFreeze
          */
-        public void setAutoResetHolderFreeze(boolean autoResetHolderFreeze) {
+        public ItemDecorationUtilHolder setAutoResetHolderFreeze(boolean autoResetHolderFreeze) {
             mIsAutoResetHolderFreeze = autoResetHolderFreeze;
+            return this;
+        }
+
+        /**
+         * 设置分割线的 drawableId
+         */
+        public ItemDecorationUtilHolder setDividerDrawableIdFreeze(@DrawableRes int dividerDrawableIdFreeze) {
+            mDividerDrawableIdFreeze = dividerDrawableIdFreeze;
+            return this;
         }
 
         /**
@@ -379,10 +413,7 @@ public class ItemDecorationUtil {
                     outRect.set(0, 0, 0, 0);
                     return this;
                 }
-                Drawable dividerDrawable = decorationConfig.getDividerDrawable(context,position);
-                if (dividerDrawable != null){
-                    outRect.set(0, 0, 0, dividerDrawable.getIntrinsicHeight());
-                }
+                outRect.set(0, 0, 0, decorationConfig.getDividerDrawable(context,position).getIntrinsicHeight());
                 return this;
             }
 
@@ -475,10 +506,11 @@ public class ItemDecorationUtil {
                     continue;
                 }
 
-                Drawable dividerDrawable = decorationConfig.getDividerDrawable(parent.getContext(),position);
-                if (decorationConfig.hideOffsetAtPosition(position) || !decorationConfig.isShowDividerLine(position) || dividerDrawable == null){
+                if (decorationConfig.hideOffsetAtPosition(position) || !decorationConfig.isShowDividerLine(position)){
                     continue;
                 }
+
+                Drawable dividerDrawable = decorationConfig.getDividerDrawable(parent.getContext(),position);
 
                 final View child = parent.getChildAt(i);
                 parent.getDecoratedBoundsWithMargins(child, mBounds);
@@ -553,10 +585,7 @@ right = halfCS - (lrm - (column + 1) * 4)
             }
             //检查是否需要展示分割线
             if (decorationConfig.isShowDividerLine(position)){
-                Drawable dividerDrawable = decorationConfig.getDividerDrawable(context,position);
-                if (dividerDrawable != null){
-                    outRect.set(0, 0, 0, dividerDrawable.getIntrinsicHeight());
-                }
+                outRect.set(0, 0, 0, decorationConfig.getDividerDrawable(context,position).getIntrinsicHeight());
                 return this;
             }
 
@@ -616,8 +645,6 @@ right = halfCS - (lrm - (column + 1) * 4)
             //处理水平方向上空白间距
             outRect.left = (int) (halfHorizontalCenterSpace + (leftMoreSpace - typeColumn * leftRightAppendSpace));
             outRect.right = (int) (halfHorizontalCenterSpace - (leftMoreSpace - (typeColumn + 1) * leftRightAppendSpace));
-
-            //Log.e("test","left : " + outRect.left + " right:" + outRect.right + "       l:" + leftRightSpace + " h:" + horizontalCenterSpace + " a:" + leftRightAppendSpace + " h:" + halfHorizontalCenterSpace);
 
             //处理垂直方向上空白间距
             //判断是否是某种换行模式的第一行
@@ -694,8 +721,21 @@ right = halfCS - (lrm - (column + 1) * 4)
      * 是否显示分割线
      */
     public static ItemDecorationUtilHolder setShowDividerLine(boolean showDividerLine) {
-        ItemDecorationUtilHolder itemDecorationUtilHolder = new ItemDecorationUtilHolder();
-        return itemDecorationUtilHolder.setShowDividerLine(showDividerLine);
+        return new ItemDecorationUtilHolder().setShowDividerLine(showDividerLine);
+    }
+
+    /**
+     * 设置是否强制不绘制任何内容
+     */
+    public ItemDecorationUtilHolder setForceNotDrawAnyFreeze(boolean forceNotDrawAnyFreeze) {
+        return new ItemDecorationUtilHolder().setForceNotDrawAnyFreeze(forceNotDrawAnyFreeze);
+    }
+
+    /**
+     * 设置是否自动重置 Holder
+     */
+    public ItemDecorationUtilHolder setAutoResetHolderFreeze(boolean autoResetHolderFreeze) {
+        return new ItemDecorationUtilHolder().setAutoResetHolderFreeze(autoResetHolderFreeze);
     }
 
     /**
