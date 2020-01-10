@@ -124,30 +124,12 @@ public class TestItemDecorationDividerActivity3 extends AppCompatActivity {
         recycler_view = findViewById(R.id.recycler_view);
         LinearLayoutManager linearLayout = new LinearLayoutManager(mContext);
 
-        recycler_view.addItemDecoration(new RecyclerView.ItemDecoration() {
-            ItemDecorationUtil.DecorationConfig mDecorationConfig = new ItemDecorationUtil.DecorationDividerConfig() {
-                @Override
-                public boolean hideOffsetAtPosition(int position) {
-                    return position == 1 || position == 5 || position == 6;
-                }
-            };
-
+        recycler_view.addItemDecoration(ItemDecorationUtil.buildConfig(new ItemDecorationUtil.DecorationDividerConfig() {
             @Override
-            public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                ItemDecorationUtil
-                        .reset()
-                        .setDecorationConfig(mDecorationConfig)
-                        .onDraw(c, parent, state);
+            public boolean hideOffsetAtPosition(int position) {
+                return position == 1 || position == 5 || position == 6;
             }
-
-            @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                ItemDecorationUtil
-                        .reset()
-                        .setDecorationConfig(mDecorationConfig)
-                        .getItemOffsets(outRect, view, parent, state);
-            }
-        });
+        }));
 
         recycler_view.setLayoutManager(linearLayout);
         recycler_view.setAdapter(new MyAdapter(mMyBeanWrappers));

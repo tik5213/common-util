@@ -17,15 +17,20 @@ import android.view.View;
 /**
  * @author tik5213 (yangb@dxy.cn)
  * @since 2019-01-03 17:28
+ *
  * 解决 GridLayoutManager LinearLayoutManager 空隙分割问题
  * 针对的样式：一个标题 -> 一堆小标签 -> 一个 Banner -> 一堆其它小标签
  * 不可使用的样式：一堆 A 小标签 -> 一堆 B 小标签 这种小标签混排的样式
  * 可使用的样式：大标签与各种小标签相互交替
+ *
+ *
+ * 优先级 getItemOffsets_GridLayoutManager：isAutoResetHolderFreeze -> resetForGetItemOffsets -> hideOffsetAtPosition -> isShowDividerLine -> 正常绘制 Item 空隙
+ * 优先级 getItemOffsets_LinearLayoutManager：isAutoResetHolderFreeze -> resetForGetItemOffsets -> hideOffsetAtPosition -> isShowDividerLine -> 正常绘制 Item 空隙
+ * 优先级 onDraw：isForceNotDrawAnyFreeze -> isAutoResetHolderFreeze -> resetForOnDraw -> hideOffsetAtPosition -> isShowDividerLine -> 绘制分割线
+ *
+ * 所有带有 freeze 标记属性，都不会被 reset 方法处理
  */
 public class ItemDecorationUtil {
-    private static ItemDecorationUtilHolder sItemDecorationUtil;
-    //默认的分割线配置类，这样下面的代码中不需要判空
-    private static DecorationConfig sDefaultConfig;
     //默认的分割线 id
     private static int sDefaultDividerId = -1;
 
@@ -33,14 +38,14 @@ public class ItemDecorationUtil {
         sDefaultDividerId = defaultDividerId;
     }
 
-    public static @NonNull DecorationConfig getDefaultConfig() {
-        if (sDefaultConfig == null){
-            sDefaultConfig = new DecorationConfig();
-        }
-        return sDefaultConfig;
-    }
+    /**
+     * 分割线配置类
+     * isShowDividerLine 默认返回 true -- 请求绘制分割线
+     * isShowLastDividerLine 默认返回 false -- 不绘制最后一个 Item 的分割线
+     * isForceNotDrawAnyFreeze 默认返回 false -- 允许绘制分割线，即允许执行 onDraw 方法
+     */
+    public static abstract class DecorationDividerConfig extends DecorationResetConfig{
 
-    public static abstract class DecorationDividerConfig extends DecorationConfig{
         @Override
         public boolean isShowDividerLine(int position) {
             return true;
@@ -51,11 +56,47 @@ public class ItemDecorationUtil {
             return false;
         }
 
+        @Override
+        public boolean isForceNotDrawAnyFreeze() {
+            return false;
+        }
+
+        /**
+         * 设置 hideOffsetAtPosition 返回 true，将不会绘制分割线
+         */
         public abstract boolean hideOffsetAtPosition(int position);
+
+        @Override
+        public boolean resetForGetItemOffsets(@NonNull ItemDecorationUtilHolder holder, int position, @NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+            return false;
+        }
+    }
+
+    /**
+     * 此类会自动重置 Holder，即调用 reset 方法
+     * isAutoResetHolderFreeze 返回 true -- 调用 resetForGetItemOffsets ，框架会自动重置 Holder
+     */
+    public static abstract class DecorationResetConfig extends DecorationConfig{
+
+        /**
+         * 设置 Item 间隙前 重新设置 ItemDecorationUtilHolder 的配置项
+         * @return 返回 true，将终止后续步骤
+         */
+        public abstract boolean resetForGetItemOffsets(@NonNull ItemDecorationUtilHolder holder,int position,@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state);
+    }
+
+    /**
+     * 默认的 DecorationConfig ，不会在运行的时候，每次都自动调用 reset 方法。
+     * isAutoResetHolderFreeze 返回 false
+     */
+    private static class DefaultDecorationConfig extends DecorationConfig{
+        @Override
+        public boolean isAutoResetHolderFreeze() {
+            return false;
+        }
     }
 
     public static class DecorationConfig {
-        private Drawable mDivider;
         private ItemDecorationUtilHolder mHolder;
 
         final DecorationConfig setHolder(ItemDecorationUtilHolder holder) {
@@ -63,13 +104,30 @@ public class ItemDecorationUtil {
             return this;
         }
 
-        protected final @Nullable ItemDecorationUtilHolder getHolder() {
+        protected final ItemDecorationUtilHolder getHolder() {
             return mHolder;
         }
 
         /**
+         * 强制不绘制任何内容（包括分割线）。即 onDraw 方法直接 return 了。
+         * 优化级：在 onDraw 中，优先级最高。当然，也仅控件 onDraw 方法。
+         */
+        public boolean isForceNotDrawAnyFreeze(){
+            return mHolder.mIsForceNotDrawAnyFreeze;
+        }
+
+        /**
+         * 是否自动重置 Holder
+         * 是否自动重置 Holder，默认不自动重置 Holder。
+         * 如果需要默认自动重置 Holder 请使用 {@link DecorationResetConfig#isAutoResetHolderFreeze}
+         */
+        public boolean isAutoResetHolderFreeze(){
+            return mHolder.mIsAutoResetHolderFreeze;
+        }
+
+        /**
          * 绘制前 重新设置 ItemDecorationUtilHolder 的配置项
-         * @return 返回 true，将终止后续步骤
+         * @return 返回 true，将终止后续步骤。即终止当次分割线的绘制
          */
         public boolean resetForOnDraw(@NonNull ItemDecorationUtilHolder holder,int position,@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
             return false;
@@ -83,28 +141,28 @@ public class ItemDecorationUtil {
             return false;
         }
 
+        /**
+         * 获取分割线的 Drawable 对象。
+         */
         public @Nullable Drawable getDividerDrawable(Context context, int position) {
-            if (mDivider == null && getDividerDrawableId(position) != -1) {
-                mDivider = ContextCompat.getDrawable(context, getDividerDrawableId(position));
+            if (mHolder.mDivider == null && getDividerDrawableId(position) != -1) {
+                mHolder.mDivider = ContextCompat.getDrawable(context, getDividerDrawableId(position));
             }
-            return mDivider;
+            return mHolder.mDivider;
         }
 
         /**
-         * 是否绘制分割线。（前提是 hideOffsetAtPosition 返回 false）
+         * 是否绘制分割线。
          */
         public boolean isShowDividerLine(int position){
-            if (mHolder != null){
-                return mHolder.mShowDividerLine;
-            }
-            return false;
+            return mHolder.mShowDividerLine;
         }
 
+        /**
+         * 是否展示最后一个 Item 的分割线
+         */
         public boolean isShowLastDividerLine(){
-            if (mHolder != null){
-                return mHolder.mShowLastDividerLine;
-            }
-            return false;
+            return mHolder.mShowLastDividerLine;
         }
 
         /**
@@ -134,12 +192,42 @@ public class ItemDecorationUtil {
         //是否显示最后一行的分割线
         private boolean mShowLastDividerLine = false;
         private final Rect mBounds = new Rect();
+        private Drawable mDivider;
 
-        public ItemDecorationUtilHolder() {
-            setDecorationConfig(getDefaultConfig());
+
+
+        /* ******* 不会被 reset 方法重置掉。 ******* */
+        //强制不绘制任何内容。在 onDraw 方法中，优先级最高。
+        private boolean mIsForceNotDrawAnyFreeze = true;
+        /**
+         * 是否自动重置 Holder，
+         * 如果设置了用户自定义的 Config，会每次自动重置 Holder。
+         * 如果没有设置用户自定义的 Config，会使用 {@link DefaultDecorationConfig#isAutoResetHolderFreeze()}，默认不自动重置 Holder
+         */
+        private boolean mIsAutoResetHolderFreeze = true;
+
+        /**
+         * 重置此分割线配置器，参数还原到默认值。
+         * 特别注意，reset 方法不会重置 $isForceNotDrawAnyFreeze 属性。如果需要重置他，请再调用 {@link #setForceNotDrawAnyFreeze}
+         */
+        public final ItemDecorationUtilHolder reset() {
+            mLeftRightSpace = 0;
+            mHorizontalCenterSpace = 0;
+            mTopSpace = 0;
+            mBottomSpace = 0;
+            mVerticalCenterSpace = 0;
+            mTopEqualCenter = false;
+            mBottomEqualCenter = false;
+            mShowDividerLine = false;
+            mShowLastDividerLine = false;
+            mDivider = null;
+            return this;
         }
 
-        public final DecorationConfig getDecorationConfig() {
+        public final @NonNull DecorationConfig getDecorationConfig() {
+            if (mDecorationConfig == null){
+                setDecorationConfig(new DefaultDecorationConfig());
+            }
             return mDecorationConfig;
         }
 
@@ -152,20 +240,50 @@ public class ItemDecorationUtil {
         }
 
         /**
+         * 强制不绘制任何内容
+         */
+        public ItemDecorationUtilHolder setForceNotDrawAnyFreeze(boolean forceNotDrawAnyFreeze) {
+            mIsForceNotDrawAnyFreeze = forceNotDrawAnyFreeze;
+            return this;
+        }
+
+        /**
+         * 设置是否自动重置 Holder
+         * @param autoResetHolderFreeze
+         */
+        public void setAutoResetHolderFreeze(boolean autoResetHolderFreeze) {
+            mIsAutoResetHolderFreeze = autoResetHolderFreeze;
+        }
+
+        /**
          * 请求展示最后一行的分割线，默认不展示
          */
         public ItemDecorationUtilHolder setShowLastDividerLine() {
-            mShowLastDividerLine = true;
+            return setShowLastDividerLine(true);
+        }
+
+        /**
+         * 请求展示最后一个 Item 的分割线
+         */
+        public ItemDecorationUtilHolder setShowLastDividerLine(boolean showLastDividerLine) {
+            mShowLastDividerLine = showLastDividerLine;
             return this;
         }
 
         /**
          * 是否显示分割线。
-         * 如果要求显示分割线，则会使用分割线的宽度来计算 item 间距。
+         * 如果要求显示分割线，则会使用分割线的宽度来计算 item 间距。同时，mIsForceNotDrawAnyFreeze 会自动设置为 false。即允许绘制分割线。
          */
-        public ItemDecorationUtilHolder setShowDividerLine() {
-            mShowDividerLine = true;
+        public ItemDecorationUtilHolder setShowDividerLine(boolean showDividerLine) {
+            if (showDividerLine){
+                mIsForceNotDrawAnyFreeze = false;
+            }
+            mShowDividerLine = showDividerLine;
             return this;
+        }
+
+        public ItemDecorationUtilHolder setShowDividerLine() {
+            return setShowDividerLine(true);
         }
 
         public ItemDecorationUtilHolder setLeftRightSpace(float dp_leftRightSpace) {
@@ -232,28 +350,36 @@ public class ItemDecorationUtil {
 
             int position = parent.getChildAdapterPosition(view); // item position
             int count = recyclerAdapter.getItemCount();
+            DecorationConfig decorationConfig = getDecorationConfig();
+
+            //判断是否自动重置 Holder
+            if (decorationConfig.isAutoResetHolderFreeze()){
+                reset();
+            }
 
             //resetForGetItemOffsets 作为设置 Item 间隙的前置条件，可以重新配置 Item 间隙
-            if (mDecorationConfig.resetForGetItemOffsets(this,position,outRect,view,parent,state)){
+            if (decorationConfig.resetForGetItemOffsets(this,position,outRect,view,parent,state)){
                 return this;
             }
 
             //检查是否允许为每个 Item 保留间隙
-            if (mDecorationConfig.hideOffsetAtPosition(position)){
-                outRect.set(0, 0, 0, 0);
+            //根据 Recycler 源码可知，mTempRect 在传递过来之前，已经设置为了 0,0,0,0。故 hideOffsetAtPosition 的时候，不需要两次设置
+            //mTempRect.set(0, 0, 0, 0);
+            //mItemDecorations.get(i).getItemOffsets(mTempRect, child, this, mState);
+            if (decorationConfig.hideOffsetAtPosition(position)){
                 return this;
             }
 
             /* ************* 分割线 保留间隙 ****************** */
-            //检查是否需要展示分割线
-            if (mDecorationConfig.isShowDividerLine(position)){
+            //检查是否需要展示分割线。如果需要展示分割线，将会按照分割线的高度来保留 Item 的间隙。
+            if (decorationConfig.isShowDividerLine(position)){
                 //判断是否是最后一行
                 boolean isEndRow = position == count - 1;
-                if (isEndRow && !mDecorationConfig.isShowLastDividerLine()){
+                if (isEndRow && !decorationConfig.isShowLastDividerLine()){
                     outRect.set(0, 0, 0, 0);
                     return this;
                 }
-                Drawable dividerDrawable = mDecorationConfig.getDividerDrawable(context,position);
+                Drawable dividerDrawable = decorationConfig.getDividerDrawable(context,position);
                 if (dividerDrawable != null){
                     outRect.set(0, 0, 0, dividerDrawable.getIntrinsicHeight());
                 }
@@ -289,18 +415,15 @@ public class ItemDecorationUtil {
         /**
          * 为每个 Item 保留间隙
          */
-        public ItemDecorationUtilHolder getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+        private ItemDecorationUtilHolder getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
 
             RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
-            if (layoutManager == null) {
-                return this;
-            }
             if (layoutManager instanceof GridLayoutManager) {
                 return getItemOffsets_GridLayoutManager((GridLayoutManager) layoutManager,outRect, view, parent, state);
             } else if (layoutManager instanceof LinearLayoutManager) {
                 return getItemOffsets_LinearLayoutManager(outRect, view, parent, state);
             } else {
-                Log.e("ItemDecorationUtil", "非 GridLayoutManager 或者 LinearLayoutManager ，使用了 ItemDecorationUtil");
+                Log.e("ItemDecorationUtil", "非 GridLayoutManager 或者 LinearLayoutManager  ，使用了 ItemDecorationUtil -> " + layoutManager);
                 return this;
             }
         }
@@ -308,10 +431,17 @@ public class ItemDecorationUtil {
         /**
          * 绘制分割线
          */
-        public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+        private void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+            DecorationConfig decorationConfig = getDecorationConfig();
+
+            if (decorationConfig.isForceNotDrawAnyFreeze()){
+                return;
+            }
+
             if (parent.getLayoutManager() == null) {
                 return;
             }
+
             canvas.save();
             final int left;
             final int right;
@@ -327,21 +457,26 @@ public class ItemDecorationUtil {
 
             int childCount = parent.getChildCount();
 
-            int length = mDecorationConfig.isShowLastDividerLine() ? childCount : childCount - 1;
+            int length = decorationConfig.isShowLastDividerLine() ? childCount : childCount - 1;
 
 
             for (int i = 0; i < length; i++) {
 
                 int position = parent.getChildAdapterPosition(parent.getChildAt(i));
 
-                Drawable dividerDrawable = mDecorationConfig.getDividerDrawable(parent.getContext(),position);
 
-                //resetForOnDraw 作为绘制 Item 分割线的前置条件，可以重新配置分割线
-                if (mDecorationConfig.resetForOnDraw(this,position,canvas,parent,state)){
+                //判断是否自动重置 Holder
+                if (decorationConfig.isAutoResetHolderFreeze()){
+                    reset();
+                }
+
+                //resetForOnDraw 作为绘制 Item 分割线的前置条件，可以重新配置分割线。也可以终止当次分割线的绘制
+                if (decorationConfig.resetForOnDraw(this,position,canvas,parent,state)){
                     continue;
                 }
 
-                if (mDecorationConfig.hideOffsetAtPosition(position) || !mDecorationConfig.isShowDividerLine(position) || dividerDrawable == null){
+                Drawable dividerDrawable = decorationConfig.getDividerDrawable(parent.getContext(),position);
+                if (decorationConfig.hideOffsetAtPosition(position) || !decorationConfig.isShowDividerLine(position) || dividerDrawable == null){
                     continue;
                 }
 
@@ -400,18 +535,25 @@ right = halfCS - (lrm - (column + 1) * 4)
 
             int position = parent.getChildAdapterPosition(view); // item position
 
+            DecorationConfig decorationConfig = getDecorationConfig();
+
+            //判断是否自动重置 Holder
+            if (decorationConfig.isAutoResetHolderFreeze()){
+                reset();
+            }
+
             //resetForGetItemOffsets 作为设置 Item 间隙的前置条件，可以重新配置 Item 间隙
-            if (mDecorationConfig.resetForGetItemOffsets(this,position,outRect,view,parent,state)){
+            if (decorationConfig.resetForGetItemOffsets(this,position,outRect,view,parent,state)){
                 return this;
             }
 
-            if (mDecorationConfig.hideOffsetAtPosition(position)){
+            if (decorationConfig.hideOffsetAtPosition(position)){
                 outRect.set(0, 0, 0, 0);
                 return this;
             }
             //检查是否需要展示分割线
-            if (mDecorationConfig.isShowDividerLine(position)){
-                Drawable dividerDrawable = mDecorationConfig.getDividerDrawable(context,position);
+            if (decorationConfig.isShowDividerLine(position)){
+                Drawable dividerDrawable = decorationConfig.getDividerDrawable(context,position);
                 if (dividerDrawable != null){
                     outRect.set(0, 0, 0, dividerDrawable.getIntrinsicHeight());
                 }
@@ -509,29 +651,6 @@ right = halfCS - (lrm - (column + 1) * 4)
         }
     }
 
-    /**
-     * 一般不建议使用此方法，而应当使用 build 的方式。
-     * 除非你只有部分 item 需要设置间距
-     *
-     * 废弃的，考虑到稳定性，这里保留 2 个版本
-     */
-    @Deprecated
-    public static ItemDecorationUtilHolder reset() {
-        if (sItemDecorationUtil == null) {
-            sItemDecorationUtil = new ItemDecorationUtilHolder();
-        }
-        sItemDecorationUtil.mLeftRightSpace = 0;
-        sItemDecorationUtil.mHorizontalCenterSpace = 0;
-        sItemDecorationUtil.mTopSpace = 0;
-        sItemDecorationUtil.mBottomSpace = 0;
-        sItemDecorationUtil.mVerticalCenterSpace = 0;
-        sItemDecorationUtil.mTopEqualCenter = false;
-        sItemDecorationUtil.mBottomEqualCenter = false;
-        sItemDecorationUtil.setDecorationConfig(getDefaultConfig());
-        sItemDecorationUtil.mShowDividerLine = false;
-        return sItemDecorationUtil;
-    }
-
     public static ItemDecorationUtilHolder setLeftRightSpace(float dp_leftRightSpace) {
         ItemDecorationUtilHolder itemDecorationUtilHolder = new ItemDecorationUtilHolder();
         itemDecorationUtilHolder.mLeftRightSpace = dp_leftRightSpace;
@@ -568,8 +687,15 @@ right = halfCS - (lrm - (column + 1) * 4)
      * 如果要求显示分割线，则会使用分割线的宽度来计算 item 间距。
      */
     public static ItemDecorationUtilHolder setShowDividerLine() {
+        return setShowDividerLine(true);
+    }
+
+    /**
+     * 是否显示分割线
+     */
+    public static ItemDecorationUtilHolder setShowDividerLine(boolean showDividerLine) {
         ItemDecorationUtilHolder itemDecorationUtilHolder = new ItemDecorationUtilHolder();
-        return itemDecorationUtilHolder.setShowDividerLine();
+        return itemDecorationUtilHolder.setShowDividerLine(showDividerLine);
     }
 
     /**
@@ -583,21 +709,35 @@ right = halfCS - (lrm - (column + 1) * 4)
      * 创建一条分割线
      */
     public static RecyclerView.ItemDecoration buildDivider(boolean showLastDividerLine){
-        if (showLastDividerLine){
-            return setShowDividerLine()
-                    .setShowLastDividerLine()
-                    .build();
-        }else {
-            return setShowDividerLine()
-                    .build();
-        }
+        return setShowDividerLine()
+                .setShowLastDividerLine(showLastDividerLine)
+                .build();
+    }
+
+    /**
+     * 此方法默认会绘制分割线。不需要对 dividerConfig 做特殊处理。
+     * 当然，你也可以传递 {@link DecorationDividerConfig}，这样默认你也不需要做其它处理就会绘制分割线。
+     */
+    public static RecyclerView.ItemDecoration buildDivider(DecorationResetConfig dividerConfig){
+        return setShowDividerLine()
+                .setDecorationConfig(dividerConfig)
+                .build();
+    }
+
+
+    /**
+     * 由于有根据 position 动态配置分割线的情况，这里可以直接通过 build 方法传递一个 DecorationConfig
+     * 注意，此方法默认不会绘制分割线。
+     * 如果需要绘制分割线，请使用 {@link #buildDivider(DecorationResetConfig)} ，或者调用 {@link ItemDecorationUtilHolder#setForceNotDrawAnyFreeze(boolean)}
+     */
+    public static RecyclerView.ItemDecoration buildConfig(DecorationResetConfig decorationConfig){
+        return new ItemDecorationUtilHolder()
+                .setDecorationConfig(decorationConfig)
+                .build();
     }
 
     /**
      * 将dip或dp值转换为px值，保证尺寸大小不变
-     *
-     * @param dipValue
-     * @return
      */
     private static int dip2px(Context context, float dipValue) {
         if (context == null || dipValue == 0) return 0;

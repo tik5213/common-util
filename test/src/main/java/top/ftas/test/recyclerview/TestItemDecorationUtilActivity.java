@@ -26,7 +26,7 @@ import top.ftas.dunit.annotation.DUnit;
  * @author tik5213 (yangb@dxy.cn)
  * @since 2019-01-04 13:17
  */
-@DUnit
+@DUnit(group = DividerGroup.class)
 public class TestItemDecorationUtilActivity extends AppCompatActivity {
     public static final int TYPE_FULL_TITLE = 1;
     public static final int TYPE_TITLE_2_ITEM = 2;
@@ -141,56 +141,50 @@ public class TestItemDecorationUtilActivity extends AppCompatActivity {
             }
         });
 
-        recycler_view.addItemDecoration(new RecyclerView.ItemDecoration() {
+        recycler_view.addItemDecoration(ItemDecorationUtil.buildConfig(new ItemDecorationUtil.DecorationResetConfig() {
+
             @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                int position = parent.getChildAdapterPosition(view);
+            public boolean resetForGetItemOffsets(@NonNull ItemDecorationUtil.ItemDecorationUtilHolder holder, int position, @NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
                 MyBeanWrapper myBeanWrapper = mMyBeanWrappers.get(position);
                 switch (myBeanWrapper.type){
                     case TYPE_FULL_TITLE:
                         break;
                     case TYPE_TITLE_2_ITEM:
-                        ItemDecorationUtil
-                                .reset()
+                        holder
                                 .setLeftRightSpace(40)
                                 .setVerticalCenterSpace(12)
                                 .setHorizontalCenterSpace(10)
-                                .setBottomSpace(30)
-                                .getItemOffsets(outRect,view,parent,state);
+                                .setBottomSpace(30);
                         break;
                     case TYPE_TITLE_3_ITEM:
-                        ItemDecorationUtil
-                                .reset()
+                        holder
                                 .setLeftRightSpace(60)
                                 .setVerticalCenterSpace(12)
                                 .setHorizontalCenterSpace(12)
-                                .setBottomSpace(30)
-                                .getItemOffsets(outRect,view,parent,state);
+                                .setBottomSpace(30);
 
                         break;
                     case TYPE_TITLE_4_ITEM:
-                        ItemDecorationUtil
-                                .reset()
+                        holder
                                 .setLeftRightSpace(40)
                                 .topIsEqualCenter()
                                 .setVerticalCenterSpace(10)
                                 .setHorizontalCenterSpace(10)
-                                .setBottomSpace(55)
-                                .getItemOffsets(outRect,view,parent,state);
+                                .setBottomSpace(55);
                         break;
                     case TYPE_TITLE_4_ITEM_2:
-                        ItemDecorationUtil
-                                .reset()
+                        holder
                                 .setLeftRightSpace(0)
                                 .topIsEqualCenter()
                                 .setVerticalCenterSpace(10)
                                 .setHorizontalCenterSpace(15)
-                                .setBottomSpace(0)
-                                .getItemOffsets(outRect,view,parent,state);
+                                .setBottomSpace(0);
                         break;
                 }
+                return false;
             }
-        });
+        }));
+
 
         recycler_view.setLayoutManager(gridLayoutManager);
         recycler_view.setAdapter(new MyAdapter(mMyBeanWrappers));

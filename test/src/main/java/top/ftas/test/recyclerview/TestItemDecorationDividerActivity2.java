@@ -124,31 +124,20 @@ public class TestItemDecorationDividerActivity2 extends AppCompatActivity {
         recycler_view = findViewById(R.id.recycler_view);
         LinearLayoutManager linearLayout = new LinearLayoutManager(mContext);
 
-        recycler_view.addItemDecoration(new RecyclerView.ItemDecoration() {
-            ItemDecorationUtil.DecorationConfig mDecorationConfig = new ItemDecorationUtil.DecorationConfig() {
-                @Override
-                public boolean isShowDividerLine(int position) {
-                    return position % 2 == 0;
-                }
-            };
+        recycler_view.addItemDecoration(ItemDecorationUtil.buildDivider(new ItemDecorationUtil.DecorationResetConfig() {
 
             @Override
-            public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                ItemDecorationUtil
-                        .reset()
-                        .setDecorationConfig(mDecorationConfig)
-                        .onDraw(c, parent, state);
+            public boolean resetForGetItemOffsets(@NonNull ItemDecorationUtil.ItemDecorationUtilHolder holder, int position, @NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                holder.setShowDividerLine(true);
+                return false;
             }
 
             @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                ItemDecorationUtil
-                        .reset()
-                        .setShowDividerLine()
-                        .getItemOffsets(outRect, view, parent, state);
-
+            public boolean resetForOnDraw(@NonNull ItemDecorationUtil.ItemDecorationUtilHolder holder, int position, @NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                holder.setShowDividerLine(position % 2 == 0);
+                return false;
             }
-        });
+        }));
 
         recycler_view.setLayoutManager(linearLayout);
         recycler_view.setAdapter(new MyAdapter(mMyBeanWrappers));

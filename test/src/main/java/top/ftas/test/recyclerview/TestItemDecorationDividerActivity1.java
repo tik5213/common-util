@@ -126,7 +126,7 @@ public class TestItemDecorationDividerActivity1 extends AppCompatActivity {
 
         Toast.makeText(mContext,showLastDividerLine ? "有最后一行分割线" : "无最后一行分割线",Toast.LENGTH_LONG).show();
 
-        recycler_view.addItemDecoration(ItemDecorationUtil.buildDivider());
+        recycler_view.addItemDecoration(ItemDecorationUtil.buildDivider(showLastDividerLine));
 
         recycler_view.setLayoutManager(linearLayout);
         recycler_view.setAdapter(new MyAdapter(mMyBeanWrappers));
