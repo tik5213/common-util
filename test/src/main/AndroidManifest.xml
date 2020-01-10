@@ -42,6 +42,9 @@
         <!-- dialog -->
         <activity android:name="top.ftas.test.dialog.TestDialogTransparentUtilActivity" />
         <activity android:name="top.ftas.test.dialog.TestDialogSettingUtilActivity" />
+        <activity android:name="top.ftas.test.recyclerview.TestItemDecorationDividerActivity1" />
+        <activity android:name="top.ftas.test.recyclerview.TestItemDecorationDividerActivity2" />
+        <activity android:name="top.ftas.test.recyclerview.TestItemDecorationDividerActivity3" />
 
 
     </application>
