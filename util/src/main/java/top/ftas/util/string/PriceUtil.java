@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 /**
+ * 常用金额转换工具类
  * @author tik5213 (yangb@dxy.cn)
  * @since 2018-10-30 09:59
  */
@@ -14,17 +15,19 @@ public class PriceUtil {
     /**
      * 金额转换 输入分 -> 输出元 保留两位小数 前面不包含￥
      * 输入 -> 输出
+     * 1 -> 0.01
+     * 10 -> 0.1
      * 100 -> 1
-     * 321 -> 32.1
+     * 3210 -> 32.1
      * 3115 -> 31.15
-     * @param price 金额-单位分
+     * @param priceFen 金额-单位分
      * @return 以字符串表示的元，保留两位小数，末浮点数位没有0
      */
-    public static String getPriceFen2YuanStr_NoZero(int price) {
-        BigDecimal priceBig = new BigDecimal(price);
+    public static String parseFen2YuanStrWithoutZero(int priceFen) {
+        BigDecimal priceBig = new BigDecimal(priceFen);
         BigDecimal ratioBig = new BigDecimal(100);
         BigDecimal priceBigYuan = priceBig.divide(ratioBig);
-        DecimalFormat decimalFormat = new DecimalFormat("##########.##");
+        DecimalFormat decimalFormat = new DecimalFormat("##################.##");
         return decimalFormat.format(priceBigYuan);
     }
     /**

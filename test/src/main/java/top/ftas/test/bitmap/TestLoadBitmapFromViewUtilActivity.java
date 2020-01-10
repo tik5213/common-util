@@ -29,7 +29,7 @@ import top.ftas.dunit.annotation.DUnit;
  * @author tik5213 (yangb@dxy.cn)
  * @since 2018-10-19 19:02
  */
-@DUnit
+@DUnit(group = BitmapGroup.class)
 public class TestLoadBitmapFromViewUtilActivity extends AppCompatActivity {
     Context mContext;
     ImageView iv_share;

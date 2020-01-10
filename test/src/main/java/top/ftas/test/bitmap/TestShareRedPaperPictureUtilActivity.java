@@ -1,4 +1,4 @@
-package top.ftas.test;
+package top.ftas.test.bitmap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,18 +9,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import cn.ftas.test.R;
-import top.ftas.util.bitmap.DisplayBigPictureUtil;
-import top.ftas.util.drawbitmap.ShareRedPaperPictureCreateBean;
-import top.ftas.util.drawbitmap.ShareRedPaperPictureUtil;
-import top.ftas.util.window_statusbar.WindowUtil;
 import top.ftas.dunit.annotation.DUnit;
+import top.ftas.util.bitmap.DisplayBigPictureUtil;
+import top.ftas.util.bitmap.ShareRedPaperPictureUtil;
+import top.ftas.util.window_statusbar.WindowUtil;
 
 /**
  * @author tik5213 (yangb@dxy.cn)
  * @since 2018-08-27 23:50
  */
-@DUnit
-public class TestShareRedPaperPictureUtilActivity extends AppCompatActivity{
+@DUnit(group = BitmapGroup.class)
+public class TestShareRedPaperPictureUtilActivity extends AppCompatActivity {
     ImageView iv_share;
     private Context mContext;
 
@@ -29,16 +28,16 @@ public class TestShareRedPaperPictureUtilActivity extends AppCompatActivity{
         mContext = this;
         super.onCreate(savedInstanceState);
 
-        setContentView(DisplayBigPictureUtil.getDisplayBigPictureView(this,true));
+        setContentView(DisplayBigPictureUtil.getDisplayBigPictureView(this, true));
         iv_share = findViewById(android.R.id.icon);
 
-        WindowUtil.setActivityToFullScreen(this,true,false);
+        WindowUtil.setActivityToFullScreen(this, true, false);
 
 
-        ShareRedPaperPictureCreateBean shareRedPaperPictureCreateBean = new ShareRedPaperPictureCreateBean();
+        ShareRedPaperPictureUtil.ShareRedPaperPictureCreateBean shareRedPaperPictureCreateBean = new ShareRedPaperPictureUtil.ShareRedPaperPictureCreateBean();
 
         shareRedPaperPictureCreateBean.doctorIcon = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.s_icon_avatar_none);
-        shareRedPaperPictureCreateBean.miniProgramQrCode = BitmapFactory.decodeResource(mContext.getResources(),R.drawable.im_qr_code);
+        shareRedPaperPictureCreateBean.miniProgramQrCode = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.im_qr_code);
         shareRedPaperPictureCreateBean.topLetter = "你的好友天梦工作号，送你丁香医生大礼包";
         shareRedPaperPictureCreateBean.redPaperMoney = 54;
         shareRedPaperPictureCreateBean.bottomEm = "54元";
