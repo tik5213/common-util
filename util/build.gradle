@@ -1,14 +1,16 @@
 apply plugin: 'com.android.library'
-//bintray
-apply plugin: 'com.novoda.bintray-release'
+if (project.hasProperty("isCommonUtilProject") && project.getProperty("isCommonUtilProject")) {
+    //bintray
+    apply plugin: 'com.novoda.bintray-release'
+}
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion 16
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -50,11 +52,13 @@ dependencies {
 }
 
 
-publish {
-    userOrg = 'tik'
-    groupId = 'top.ftas'
-    artifactId = 'common-util'
-    publishVersion = '2.1'
-    desc = 'common-util'
-    website = 'https://github.com/tik5213/common-util'
+if (project.hasProperty("isCommonUtilProject") && project.getProperty("isCommonUtilProject")) {
+    publish {
+        userOrg = 'tik'
+        groupId = 'top.ftas'
+        artifactId = 'common-util'
+        publishVersion = '2.1'
+        desc = 'common-util'
+        website = 'https://github.com/tik5213/common-util'
+    }
 }
