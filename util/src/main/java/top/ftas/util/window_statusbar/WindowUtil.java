@@ -5,12 +5,14 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+
+import androidx.fragment.app.DialogFragment;
 
 public class WindowUtil {
 
@@ -136,7 +138,7 @@ public class WindowUtil {
      *
      * @param dialogFragment
      */
-    public static void setSupportDialogFragmentToTransparent(android.support.v4.app.DialogFragment dialogFragment) {
+    public static void setSupportDialogFragmentToTransparent(DialogFragment dialogFragment) {
         Dialog dialog = dialogFragment.getDialog();
         if (dialog == null) return;
         Window window = dialog.getWindow();

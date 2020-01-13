@@ -1,8 +1,8 @@
 package top.ftas.demo.animation.evaluate;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import cn.ftas.demo.R;
 import top.ftas.demo.animation.AnimationGroup;

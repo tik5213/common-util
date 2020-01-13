@@ -129,7 +129,7 @@ public class DisplayBigPictureUtil {
      * 来源 https://github.com/boycy815/PinchImageView
      * @author clifford
      */
-    private static class MyBigDrawableImageView extends android.support.v7.widget.AppCompatImageView  {
+    private static class MyBigDrawableImageView extends androidx.appcompat.widget.AppCompatImageView  {
 
 
         ////////////////////////////////配置参数////////////////////////////////

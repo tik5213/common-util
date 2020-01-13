@@ -1,7 +1,7 @@
 package top.ftas.util.recyclerview;
 
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 /**
  * Created by tik on 17/12/12.

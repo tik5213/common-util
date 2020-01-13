@@ -18,7 +18,7 @@
         app:height_space="12dp"
         app:width_space="12dp" />
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/more_layout"
         android:visibility="gone"
         tools:visibility="visible"
@@ -60,5 +60,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

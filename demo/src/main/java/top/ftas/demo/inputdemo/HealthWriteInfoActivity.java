@@ -1,8 +1,8 @@
 package top.ftas.demo.inputdemo;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import cn.ftas.demo.R;
 import top.ftas.dunit.annotation.DUnit;

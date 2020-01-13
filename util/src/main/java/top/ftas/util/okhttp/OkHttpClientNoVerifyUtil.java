@@ -1,6 +1,6 @@
 package top.ftas.util.okhttp;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
