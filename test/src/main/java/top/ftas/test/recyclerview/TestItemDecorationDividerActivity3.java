@@ -2,6 +2,7 @@ package top.ftas.test.recyclerview;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,24 +26,37 @@ import top.ftas.util.recyclerview.ItemDecorationUtil;
  * @author tik5213 (yangb@dxy.cn)
  * @since 2019-01-04 13:17
  */
-@DUnit(name = "部分不绘制分割线且无间隙 1,5,6", group = DividerGroup.class)
+@DUnit(name = "部分不绘制分割线且无间隙", group = DividerGroup.class)
 public class TestItemDecorationDividerActivity3 extends AppCompatActivity {
-    public static final int TYPE_FULL_TITLE = 1;
-    public static final int TYPE_TITLE_2_ITEM = 2;
-    public static final int TYPE_TITLE_3_ITEM = 3;
-    public static final int TYPE_TITLE_4_ITEM = 4;
-    public static final int TYPE_TITLE_4_ITEM_2 = 42;
-
 
     public static class MyBeanWrapper {
-        public MyBeanWrapper(int type, String title) {
-            this.type = type;
+        public MyBeanWrapper(String title) {
             this.title = title;
         }
 
-        public int type;
         public String title;
     }
+
+    public static class MyWithDivider extends MyBeanWrapper{
+
+        public MyWithDivider(String title) {
+            super(title);
+        }
+    }
+
+    public static class MyWithSpace extends MyBeanWrapper {
+        public MyWithSpace(String title) {
+            super(title);
+        }
+    }
+
+    public static class MyBigItem extends MyBeanWrapper {
+        public MyBigItem(String title) {
+            super(title);
+        }
+    }
+
+
 
     public static class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         private List<MyBeanWrapper> mDataList;
@@ -55,39 +69,30 @@ public class TestItemDecorationDividerActivity3 extends AppCompatActivity {
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
-            switch (viewType) {
-                case TYPE_FULL_TITLE:
-                    view.setBackgroundColor(Color.BLUE);
-                    break;
-                case TYPE_TITLE_2_ITEM:
-                    view.setBackgroundColor(Color.GREEN);
-                    break;
-                case TYPE_TITLE_3_ITEM:
-                    view.setBackgroundColor(Color.RED);
-                    break;
-                case TYPE_TITLE_4_ITEM:
-                    view.setBackgroundColor(Color.YELLOW);
-                    break;
-                case TYPE_TITLE_4_ITEM_2:
-                    view.setBackgroundColor(Color.GRAY);
-                    break;
-            }
             return new MyViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
+            MyBeanWrapper obj = mDataList.get(position);
             holder.mTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TipUtil.toast(mDataList.get(position).title);
+                    TipUtil.toast(obj.title);
                 }
             });
+            holder.mTextView.setText(obj.title);
+
+            if (obj instanceof MyBigItem){
+                holder.mTextView.setBackgroundColor(Color.parseColor("#ff9200"));
+            }else {
+                holder.mTextView.setBackgroundColor(Color.WHITE);
+            }
         }
 
         @Override
         public int getItemViewType(int position) {
-            return mDataList.get(position).type;
+            return mDataList.get(position).getClass().hashCode();
         }
 
         @Override
@@ -122,10 +127,23 @@ public class TestItemDecorationDividerActivity3 extends AppCompatActivity {
         recycler_view = findViewById(R.id.recycler_view);
         LinearLayoutManager linearLayout = new LinearLayoutManager(mContext);
 
-        recycler_view.addItemDecoration(ItemDecorationUtil.buildConfig(new ItemDecorationUtil.DecorationDividerConfig() {
+        recycler_view.addItemDecoration(ItemDecorationUtil.buildDivider(new ItemDecorationUtil.DecorationResetConfig() {
+
             @Override
-            public boolean hideOffsetAtPosition(int position) {
-                return position == 1 || position == 5 || position == 6;
+            public boolean resetForGetItemOffsets(@NonNull ItemDecorationUtil.ItemDecorationUtilHolder holder, int position, @NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                if (mMyBeanWrappers.get(position) instanceof MyWithSpace){
+                    outRect.bottom = dip2px(100);
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean isShowDividerLine(int position) {
+                if (getItem(mMyBeanWrappers,position) instanceof MyWithDivider && getItem(mMyBeanWrappers,position + 1) instanceof MyWithDivider){
+                    return true;
+                }
+                return false;
             }
         }));
 
@@ -143,105 +161,44 @@ public class TestItemDecorationDividerActivity3 extends AppCompatActivity {
 
     private void initData() {
         mMyBeanWrappers = new ArrayList<>();
+        mMyBeanWrappers.add(new MyBigItem("阿尔兹海默症"));
+        mMyBeanWrappers.add(new MyWithSpace("查看详情"));
 
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "所有疾病"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "避孕"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "支气管炎"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "过敏性鼻炎"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签1"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签2"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签3"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "最后一个标签"));
+        mMyBeanWrappers.add(new MyWithSpace("大卡片"));
 
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "所有科室"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
+        mMyBeanWrappers.add(new MyBeanWrapper("标题"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithSpace("更多99个医生"));
 
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "所有疾病"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "避孕"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "支气管炎"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "过敏性鼻炎"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "标签1"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "标签2"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "标签3"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_2_ITEM, "最后一个标签"));
+        mMyBeanWrappers.add(new MyBeanWrapper("标题"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithSpace("更多99个医生"));
 
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "所有科室"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM_2, "神经内科"));
 
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "所有科室"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
+        mMyBeanWrappers.add(new MyBigItem("阿尔兹海默症"));
 
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "标题三"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签三"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签三"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签三"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签三"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签三"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签三"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签三"));
+        mMyBeanWrappers.add(new MyBeanWrapper("标题"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithDivider("王建国"));
+        mMyBeanWrappers.add(new MyWithSpace("更多99个医生"));
 
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "标题四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "标题四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "标签四"));
 
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签3"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签3"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签3"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签3"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "标题"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "标题"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签3"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签3"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_4_ITEM, "神经内科"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签3"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签3"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签3"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_TITLE_3_ITEM, "标签3"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "标题"));
-        mMyBeanWrappers.add(new MyBeanWrapper(TYPE_FULL_TITLE, "标题"));
+
+
+
     }
 }

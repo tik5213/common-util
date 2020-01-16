@@ -8,12 +8,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+
+import java.util.List;
 
 /**
  * @author tik5213 (yangb@dxy.cn)
@@ -111,6 +114,7 @@ public class ItemDecorationUtil {
      */
     public static class DecorationConfig {
         private ItemDecorationUtilHolder mHolder;
+        private Context mContext;
 
         final DecorationConfig setHolder(ItemDecorationUtilHolder holder) {
             mHolder = holder;
@@ -199,6 +203,25 @@ public class ItemDecorationUtil {
         public @DrawableRes int getDividerDrawableId(int position){
             return mHolder.mDividerDrawableIdFreeze;
         }
+
+        /**
+         * 将dip或dp值转换为px值，保证尺寸大小不变
+         */
+        public int dip2px(float dipValue) {
+            return ItemDecorationUtil.dip2px(mContext,dipValue);
+        }
+
+        /**
+         * 获取列表中的项
+         */
+        public @Nullable Object getItem(@Nullable List list,int position){
+            if (list == null) return null;
+            if (position < 0 || position >= list.size()){
+                return null;
+            }
+            return list.get(position);
+        }
+
     }
 
     public static class ItemDecorationUtilHolder {
@@ -250,9 +273,12 @@ public class ItemDecorationUtil {
             return this;
         }
 
-        public final @NonNull DecorationConfig getDecorationConfig() {
+        private @NonNull DecorationConfig getDecorationConfig(@NonNull RecyclerView parent) {
             if (mDecorationConfig == null){
                 setDecorationConfig(new DefaultDecorationConfig());
+            }
+            if (mDecorationConfig.mContext == null){
+                mDecorationConfig.mContext = parent.getContext();
             }
             return mDecorationConfig;
         }
@@ -384,7 +410,7 @@ public class ItemDecorationUtil {
 
             int position = parent.getChildAdapterPosition(view); // item position
             int count = recyclerAdapter.getItemCount();
-            DecorationConfig decorationConfig = getDecorationConfig();
+            DecorationConfig decorationConfig = getDecorationConfig(parent);
 
             //判断是否自动重置 Holder
             if (decorationConfig.isAutoResetHolderFreeze()){
@@ -410,10 +436,11 @@ public class ItemDecorationUtil {
                 //判断是否是最后一行
                 boolean isEndRow = position == count - 1;
                 if (isEndRow && !decorationConfig.isShowLastDividerLine()){
-                    outRect.set(0, 0, 0, 0);
+                    //根据 Recycler 源码可知，mTempRect 在传递过来之前，已经设置为了 0,0,0,0。
                     return this;
                 }
-                outRect.set(0, 0, 0, decorationConfig.getDividerDrawable(context,position).getIntrinsicHeight());
+                //根据 Recycler 源码可知，mTempRect 在传递过来之前，已经设置为了 0,0,0,0。
+                outRect.bottom = decorationConfig.getDividerDrawable(context,position).getIntrinsicHeight();
                 return this;
             }
 
@@ -463,7 +490,7 @@ public class ItemDecorationUtil {
          * 绘制分割线
          */
         private void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-            DecorationConfig decorationConfig = getDecorationConfig();
+            DecorationConfig decorationConfig = getDecorationConfig(parent);
 
             if (decorationConfig.isForceNotDrawAnyFreeze()){
                 return;
@@ -567,7 +594,7 @@ right = halfCS - (lrm - (column + 1) * 4)
 
             int position = parent.getChildAdapterPosition(view); // item position
 
-            DecorationConfig decorationConfig = getDecorationConfig();
+            DecorationConfig decorationConfig = getDecorationConfig(parent);
 
             //判断是否自动重置 Holder
             if (decorationConfig.isAutoResetHolderFreeze()){
@@ -580,12 +607,12 @@ right = halfCS - (lrm - (column + 1) * 4)
             }
 
             if (decorationConfig.hideOffsetAtPosition(position)){
-                outRect.set(0, 0, 0, 0);
                 return this;
             }
+
             //检查是否需要展示分割线
             if (decorationConfig.isShowDividerLine(position)){
-                outRect.set(0, 0, 0, decorationConfig.getDividerDrawable(context,position).getIntrinsicHeight());
+                outRect.bottom = decorationConfig.getDividerDrawable(context,position).getIntrinsicHeight();
                 return this;
             }
 

@@ -57,7 +57,7 @@ if (project.hasProperty("isCommonUtilProject") && project.getProperty("isCommonU
         userOrg = 'tik'
         groupId = 'top.ftas'
         artifactId = 'common-util'
-        publishVersion = '3.0'
+        publishVersion = '3.1'
         desc = 'common-util'
         website = 'https://github.com/tik5213/common-util'
     }
